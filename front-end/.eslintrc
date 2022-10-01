@@ -4,28 +4,16 @@
     "browser": true,
     "node": true
   },
-  "extends": [
-    "airbnb",
-    "plugin:jsx-a11y/recommended",
-    "plugin:react-hooks/recommended",
-    "prettier"
-  ],
-  "plugins": [
-    "react",
-    "react-hooks",
-    "prettier"
-  ],
-  "parser": "@babel/eslint-parser",
-  "parserOptions": {
-    "ecmaVersion": 8,
-    "requireConfigFile": false,
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
-      "impliedStrict": true
+  "extends": ["airbnb", "plugin:jsx-a11y/recommended", "plugin:react-hooks/recommended", "prettier"],
+  "plugins": ["react", "react-hooks", "prettier"],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
     }
   },
   "rules": {
-    "no-new": 0,
     "no-shadow": 0,
     "no-console": 0,
     "react/jsx-key": 1,
@@ -51,6 +39,7 @@
     "import/prefer-default-export": 0,
     "react/jsx-props-no-spreading": 0,
     "react/jsx-filename-extension": 0,
+    "import/no-named-as-default": 0,
     "react/jsx-no-useless-fragment": 0,
     "react/jsx-curly-brace-presence": 0,
     "react/destructuring-assignment": 0,
