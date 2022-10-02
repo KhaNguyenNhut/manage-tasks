@@ -1,0 +1,5 @@
+command to import database
+mongorestore -d manage_task ./manage_task_db
+
+command to export database
+mongodump -d manage_task -o ./manage_task_db
