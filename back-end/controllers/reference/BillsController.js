@@ -1,6 +1,6 @@
-const Bill = require('../models/Bill');
-const Table = require('../models/Table');
-const Order = require('../models/Order');
+const Bill = require('../../models/reference/Bill');
+const Table = require('../../models/Table');
+const Order = require('../../models/Order');
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth();
 

@@ -7,10 +7,10 @@ var RoleSchema = new Schema({
   access: [{type: mongoose.Schema.Types.ObjectId, ref: 'Access'}]
 });
 
-RoleSchema.virtual('staff', {
-  ref: 'Staff',
+RoleSchema.virtual('user', {
+  ref: 'User',
   localField: '_id',
-  foreignField: 'staff',
+  foreignField: 'user',
 });
 
 RoleSchema.set('toJSON', {
