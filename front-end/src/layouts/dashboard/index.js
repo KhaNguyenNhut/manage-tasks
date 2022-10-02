@@ -14,7 +14,7 @@ const APP_BAR_DESKTOP = 92;
 const RootStyle = styled('div')({
   display: 'flex',
   minHeight: '100%',
-  overflow: 'hidden'
+  overflow: 'hidden',
 });
 
 const MainStyle = styled('div')(({ theme }) => ({
@@ -26,22 +26,34 @@ const MainStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
     paddingTop: APP_BAR_DESKTOP + 24,
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2)
-  }
+    paddingRight: theme.spacing(2),
+  },
 }));
 
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
+  const token = localStorage.getItem('token');
 
+  if (!token) {
+    window.location.href = '/login';
+  }
   return (
     <RootStyle>
-      <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
-      <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
-      <MainStyle>
-        <Outlet />
-      </MainStyle>
+      {token ? (
+        <>
+          <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
+          <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+          <MainStyle>
+            <Outlet />
+          </MainStyle>
+        </>
+      ) : (
+        <div className="flex items-center justify-center min-w-full min-h-screen">
+          <p>Loading...</p>
+        </div>
+      )}
     </RootStyle>
   );
 }

@@ -10,7 +10,7 @@ const path = require('path');
 const http = require('http');
 
 const server = http.createServer(app);
-const originAllow = 'https://localhost:3000';
+const originAllow = 'http://localhost:3000';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
