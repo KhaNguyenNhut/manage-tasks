@@ -5,7 +5,7 @@ import ThemeProvider from './theme';
 // components
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
-import "./index.css";
+import "./app.css";
 // ----------------------------------------------------------------------
 
 export default function App() {
