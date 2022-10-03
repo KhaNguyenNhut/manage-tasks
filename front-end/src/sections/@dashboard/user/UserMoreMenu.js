@@ -1,15 +1,20 @@
 import { useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
-import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
+import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import PropTypes from 'prop-types';
 // component
 import Iconify from '../../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu() {
+export default function UserMoreMenu({ id, handleDeleteUser }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const onDeleteUser = () => {
+    handleDeleteUser(id);
+  };
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   return (
     <>
@@ -27,14 +32,15 @@ export default function UserMoreMenu() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Iconify icon="eva:trash-2-outline" width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
-
-        <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }}>
+        {currentUser._id !== id && (
+          <MenuItem sx={{ color: 'text.secondary' }} onClick={onDeleteUser}>
+            <ListItemIcon>
+              <Iconify icon="eva:trash-2-outline" width={24} height={24} />
+            </ListItemIcon>
+            <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
+          </MenuItem>
+        )}
+        <MenuItem component={RouterLink} to={`/dashboard/edit-user/${id}`} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Iconify icon="eva:edit-fill" width={24} height={24} />
           </ListItemIcon>
@@ -44,3 +50,8 @@ export default function UserMoreMenu() {
     </>
   );
 }
+
+UserMoreMenu.propTypes = {
+  id: PropTypes.string,
+  handleDeleteUser: PropTypes.func,
+};

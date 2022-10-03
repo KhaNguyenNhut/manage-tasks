@@ -70,7 +70,7 @@ export default function ShopFilterSidebar({ isOpenFilter, onOpenFilter, onCloseF
           sx: { width: 280, border: 'none', overflow: 'hidden' },
         }}
       >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1, py: 2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} sx={{ px: 1, py: 2 }}>
           <Typography variant="subtitle1" sx={{ ml: 1 }}>
             Filters
           </Typography>

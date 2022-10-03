@@ -1,12 +1,11 @@
 import { useRef, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
+import { Avatar, Box, Divider, IconButton, MenuItem, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@mui/material';
 // components
 import MenuPopover from '../../components/MenuPopover';
 // mocks_
-import account from '../../_mock/account';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +31,8 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
   const anchorRef = useRef(null);
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState(null);
 
@@ -40,6 +41,8 @@ export default function AccountPopover() {
   };
 
   const handleClose = () => {
+    localStorage.clear();
+    navigate('/login', { replace: true });
     setOpen(null);
   };
 
@@ -63,7 +66,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={process.env.REACT_APP_URL_IMG + currentUser.avatar} alt="photoURL" />
       </IconButton>
 
       <MenuPopover
@@ -82,10 +85,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {currentUser.fullName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {currentUser.email}
           </Typography>
         </Box>
 

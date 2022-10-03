@@ -22,7 +22,7 @@ export default function Blog() {
   return (
     <Page title="Dashboard: Blog">
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h4" gutterBottom>
             Blog
           </Typography>
