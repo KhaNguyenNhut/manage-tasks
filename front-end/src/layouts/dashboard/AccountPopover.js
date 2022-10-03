@@ -32,6 +32,7 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const anchorRef = useRef(null);
   const currentUser = JSON.parse(localStorage.getItem('user'));
+  MENU_OPTIONS[1].linkTo = `/dashboard/edit-user/${currentUser._id}`;
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(null);
@@ -40,9 +41,11 @@ export default function AccountPopover() {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
-    localStorage.clear();
-    navigate('/login', { replace: true });
+  const handleClose = (isLogout = false) => {
+    if (isLogout) {
+      localStorage.clear();
+      navigate('/login', { replace: true });
+    }
     setOpen(null);
   };
 
@@ -96,7 +99,7 @@ export default function AccountPopover() {
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} to={option.linkTo} component={RouterLink} onClick={handleClose}>
+            <MenuItem key={option.label} to={option.linkTo} component={RouterLink} onClick={() => handleClose()}>
               {option.label}
             </MenuItem>
           ))}
@@ -104,7 +107,7 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={() => handleClose(true)} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </MenuPopover>
