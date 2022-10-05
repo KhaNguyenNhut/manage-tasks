@@ -3,14 +3,14 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
-import Blog from './pages/Blog';
-import User from './pages/User';
+import AddNewTask from './pages/AddNewTask';
+import AddNewUser from './pages/AddNewUser';
+import DashboardApp from './pages/DashboardApp';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
-import Products from './pages/Products';
-import DashboardApp from './pages/DashboardApp';
-import AddNewUser from './pages/AddNewUser';
+import Task from './pages/Task';
+import User from './pages/User';
 
 // ----------------------------------------------------------------------
 
@@ -24,8 +24,9 @@ export default function Router() {
         { path: 'user', element: <User /> },
         { path: 'add-new-user', element: <AddNewUser /> },
         { path: 'edit-user/:id', element: <AddNewUser /> },
-        { path: 'products', element: <Products /> },
-        { path: 'blog', element: <Blog /> },
+        { path: 'task', element: <Task /> },
+        { path: 'add-new-task', element: <AddNewTask /> },
+        { path: 'edit-task/:id', element: <AddNewTask /> },
       ],
     },
     {

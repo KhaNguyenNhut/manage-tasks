@@ -5,18 +5,17 @@ import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/mat
 import PropTypes from 'prop-types';
 // component
 import Iconify from '../../../components/Iconify';
-import userApi from '../../../api/userApi';
+import taskApi from '../../../api/taskApi';
 
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu({ id, handleDeleteUser }) {
+export default function TaskMoreMenu({ id, handleDeleteTask }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const onDeleteUser = async () => {
-    await userApi.delete(id);
-    handleDeleteUser(id);
+  const onDeleteTask = async () => {
+    await taskApi.delete(id);
+    handleDeleteTask(id);
   };
-  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   return (
     <>
@@ -34,26 +33,30 @@ export default function UserMoreMenu({ id, handleDeleteUser }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        {currentUser._id !== id && (
-          <MenuItem sx={{ color: 'text.secondary' }} onClick={onDeleteUser}>
-            <ListItemIcon>
-              <Iconify icon="eva:trash-2-outline" width={24} height={24} />
-            </ListItemIcon>
-            <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
-          </MenuItem>
-        )}
-        <MenuItem component={RouterLink} to={`/dashboard/edit-user/${id}`} sx={{ color: 'text.secondary' }}>
+        <MenuItem component={RouterLink} to={`/dashboard/task-detail/${id}`} sx={{ color: 'text.secondary' }}>
+          <ListItemIcon>
+            <Iconify icon="eva:eye-fill" width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Xem chi tiết" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+        <MenuItem component={RouterLink} to={`/dashboard/edit-task/${id}`} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Iconify icon="eva:edit-fill" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Chỉnh sửa" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+        <MenuItem sx={{ color: 'text.secondary' }} onClick={onDeleteTask}>
+          <ListItemIcon>
+            <Iconify icon="eva:trash-2-outline" width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Xóa" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
     </>
   );
 }
 
-UserMoreMenu.propTypes = {
+TaskMoreMenu.propTypes = {
   id: PropTypes.string,
-  handleDeleteUser: PropTypes.func,
+  handleDeleteTask: PropTypes.func,
 };
