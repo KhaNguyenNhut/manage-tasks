@@ -29,7 +29,7 @@ import userApi from '../api/userApi';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Họ và Tên', alignRight: false },
+  { id: 'fullName', label: 'Họ và Tên', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
   { id: 'role', label: 'Vai Trò', alignRight: false },
   { id: 'officerCode', label: 'Mã Cán Bộ', alignRight: false },
@@ -41,6 +41,15 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
+  if (orderBy === 'role') {
+    if (b[orderBy].name < a[orderBy].name) {
+      return -1;
+    }
+    if (b[orderBy].name > a[orderBy].name) {
+      return 1;
+    }
+  }
+
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }

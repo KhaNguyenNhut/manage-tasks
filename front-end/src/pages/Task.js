@@ -36,7 +36,7 @@ const TABLE_HEAD = [
   { id: 'user', label: 'Người Thực Hiện', alignRight: false },
   { id: 'supervisor', label: 'Người Giám Sát', alignRight: false },
   { id: 'timeG', label: 'Giờ G', alignRight: false },
-  { id: 'createAt', label: 'Ngày Tạo', alignRight: false },
+  { id: 'createdAt', label: 'Ngày Tạo', alignRight: false },
   { id: 'status', label: 'Trạng Thái', alignRight: false },
   { id: '' },
 ];
@@ -44,6 +44,24 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
+  if (orderBy === 'taskType') {
+    if (b[orderBy].name < a[orderBy].name) {
+      return -1;
+    }
+    if (b[orderBy].name > a[orderBy].name) {
+      return 1;
+    }
+  }
+
+  if (orderBy === 'user' || orderBy === 'supervisor') {
+    if (b[orderBy].fullName < a[orderBy].fullName) {
+      return -1;
+    }
+    if (b[orderBy].fullName > a[orderBy].fullName) {
+      return 1;
+    }
+  }
+
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
