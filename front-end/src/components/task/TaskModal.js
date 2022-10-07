@@ -11,7 +11,7 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: '70%',
   height: '80%',
-  bgcolor: '#f2f2f2',
+  bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
   borderRadius: '10px',
@@ -88,15 +88,15 @@ function TaskModal({ open, handleClose, taskSelected, handleUpdateState }) {
               <p className="w-1/2 text-sm font-bold text-gray-500">Giờ G: </p>
               <span className="inline-block px-2 py-1 ml-2 text-sm bg-gray-200 rounded-lg">{taskSelected.timeG}</span>
             </div>
-            <div className="flex items-center mt-3">
+            <div className="flex items-center mt-3 ">
               <p className="w-1/2 text-sm font-bold text-gray-500">Ngày bắt đầu: </p>
               <span className="inline-block ml-2">{taskSelected.startDate.slice(0, 10)}</span>
             </div>
-            <div className="flex items-center mt-3">
+            <div className="flex items-center mt-3 ">
               <p className="w-1/2 text-sm font-bold text-gray-500">Ngày kết thúc: </p>
               <span className="inline-block ml-2">{taskSelected.endDate.slice(0, 10)}</span>
             </div>
-            <div className="flex items-center mt-3">
+            <div className="flex items-center mt-3 ">
               <p className="w-1/2 text-sm font-bold text-gray-500">Ước tính: </p>
               <span className="inline-block px-2 py-1 ml-2 text-sm bg-gray-200 rounded-lg">
                 {Math.floor((Date.parse(taskSelected.endDate) - Date.parse(taskSelected.startDate)) / 86400000) + 1}{' '}
