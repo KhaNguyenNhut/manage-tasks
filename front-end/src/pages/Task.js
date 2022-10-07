@@ -26,6 +26,7 @@ import { UserListHead } from '../sections/@dashboard/user';
 import taskApi from '../api/taskApi';
 import TaskListToolbar from '../sections/@dashboard/task/TaskListToolbar';
 import TaskMoreMenu from '../sections/@dashboard/task/TaskMoreMenu';
+import TaskModal from '../components/task/TaskModal';
 
 // ----------------------------------------------------------------------
 
@@ -78,6 +79,9 @@ export default function Task() {
   const [filterTask, setFilterTask] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [tasks, setTask] = useState([]);
+  const [isOpenModal, setOpenModal] = useState(false);
+  const [taskSelected, setTaskSelected] = useState();
+
   const hideCheckbox = true;
 
   useEffect(() => {
@@ -119,8 +123,36 @@ export default function Task() {
     setTask(newUser);
   };
 
+  const handleClickTaskModal = () => {
+    if (isOpenModal) {
+      setTaskSelected();
+    }
+    setOpenModal(!isOpenModal);
+  };
+
+  const handleOpenTaskModal = (id) => {
+    const task = tasks.find((each) => each._id === id);
+    setTaskSelected(task);
+    handleClickTaskModal();
+  };
+
+  const handleUpdateState = (task) => {
+    const idxTask = tasks.findIndex((each) => each._id === task._id);
+    const newTasks = [...tasks];
+    newTasks[idxTask] = task;
+    setTask(newTasks);
+  };
   return (
     <Page title="User">
+      {taskSelected && (
+        <TaskModal
+          taskSelected={taskSelected}
+          open={isOpenModal}
+          handleClose={handleClickTaskModal}
+          handleUpdateState={handleUpdateState}
+        />
+      )}
+
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h4" gutterBottom>
@@ -177,7 +209,11 @@ export default function Task() {
                       <TableCell align="left">{row.createdAt.slice(0, 10)}</TableCell>
                       <TableCell align="left">{row.status}</TableCell>
                       <TableCell align="right">
-                        <TaskMoreMenu id={row._id} handleDeleteTask={handleDeleteTask} />
+                        <TaskMoreMenu
+                          id={row._id}
+                          handleDeleteTask={handleDeleteTask}
+                          handleOpenTaskModal={handleOpenTaskModal}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}

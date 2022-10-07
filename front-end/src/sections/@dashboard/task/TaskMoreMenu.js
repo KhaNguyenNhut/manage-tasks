@@ -9,7 +9,7 @@ import taskApi from '../../../api/taskApi';
 
 // ----------------------------------------------------------------------
 
-export default function TaskMoreMenu({ id, handleDeleteTask }) {
+export default function TaskMoreMenu({ id, handleDeleteTask, handleOpenTaskModal }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const onDeleteTask = async () => {
@@ -17,6 +17,10 @@ export default function TaskMoreMenu({ id, handleDeleteTask }) {
     handleDeleteTask(id);
   };
 
+  const onOpenTaskModal = () => {
+    handleOpenTaskModal(id);
+    setIsOpen(false);
+  };
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -33,7 +37,7 @@ export default function TaskMoreMenu({ id, handleDeleteTask }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem component={RouterLink} to={`/dashboard/task-detail/${id}`} sx={{ color: 'text.secondary' }}>
+        <MenuItem onClick={() => onOpenTaskModal(id)} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Iconify icon="eva:eye-fill" width={24} height={24} />
           </ListItemIcon>
