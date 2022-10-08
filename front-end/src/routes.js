@@ -11,7 +11,9 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Task from './pages/Task';
 import User from './pages/User';
+import Role from './pages/Role';
 import Profile from './pages/Profile';
+import AddNewRole from './pages/AddNewRole';
 
 // ----------------------------------------------------------------------
 
@@ -27,6 +29,9 @@ export default function Router() {
         { path: 'add-new-user', element: <AddNewUser /> },
         { path: 'edit-user/:id', element: <AddNewUser /> },
         { path: 'task', element: <Task /> },
+        { path: 'role', element: <Role /> },
+        { path: 'add-new-role', element: <AddNewRole /> },
+        { path: 'edit-role/:id', element: <AddNewRole /> },
         { path: 'add-new-task', element: <AddNewTask /> },
         { path: 'edit-task/:id', element: <AddNewTask /> },
       ],
