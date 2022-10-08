@@ -24,12 +24,12 @@ const navConfig = [
   {
     title: 'Quản lý vai trò',
     path: '/dashboard/role',
-    icon: getIcon('eva:clipboard-fill'),
+    icon: getIcon('eva:person-fill'),
   },
   {
     title: 'Quản lý loại công việc',
     path: '/dashboard/type-task',
-    icon: getIcon('eva:clipboard-fill'),
+    icon: getIcon('eva:file-text-fill'),
   },
 ];
 

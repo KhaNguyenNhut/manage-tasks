@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
-  Avatar,
   Button,
   Card,
   Checkbox,
@@ -15,7 +14,7 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
-  Typography,
+  Typography
 } from '@mui/material';
 // components
 import Iconify from '../components/Iconify';
@@ -24,9 +23,8 @@ import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 // mock
 import taskTypeApi from '../api/taskTypeApi';
-import RoleListToolbar from '../sections/@dashboard/role/RoleListToolbar';
 import RoleListHead from '../sections/@dashboard/role/RoleListHead';
-import RoleMoreMenu from '../sections/@dashboard/role/RoleMoreMenu';
+import RoleListToolbar from '../sections/@dashboard/role/RoleListToolbar';
 import TaskTypeMoreMenu from '../sections/@dashboard/taskType/TaskTypeMoreMenu';
 // ----------------------------------------------------------------------
 

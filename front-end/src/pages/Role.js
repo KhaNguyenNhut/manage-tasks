@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
-  Avatar,
   Button,
   Card,
   Checkbox,
@@ -24,8 +23,8 @@ import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 // mock
 import roleApi from '../api/roleApi';
-import RoleListToolbar from '../sections/@dashboard/role/RoleListToolbar';
 import RoleListHead from '../sections/@dashboard/role/RoleListHead';
+import RoleListToolbar from '../sections/@dashboard/role/RoleListToolbar';
 import RoleMoreMenu from '../sections/@dashboard/role/RoleMoreMenu';
 // ----------------------------------------------------------------------
 
@@ -181,7 +180,7 @@ export default function Role() {
                 />
                 <TableBody>
                   {filteredRoles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    const { _id, name} = row;
+                    const { _id, name } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (
