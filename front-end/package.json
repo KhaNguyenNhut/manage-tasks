@@ -61,6 +61,7 @@
     "react-images-uploading": "^3.1.7",
     "react-router-dom": "^6.3.0",
     "react-scripts": "^5.0.0",
+    "react-speech-recognition": "^3.9.1",
     "simplebar": "^5.3.6",
     "simplebar-react": "^2.3.6",
     "web-vitals": "^2.1.4",
