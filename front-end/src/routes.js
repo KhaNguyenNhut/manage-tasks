@@ -15,6 +15,8 @@ import Role from './pages/Role';
 import Profile from './pages/Profile';
 import AddNewRole from './pages/AddNewRole';
 import TaskInfo from './pages/TaskInfo';
+import TypeTask from './pages/TypeTask';
+import AddNewTypeTask from './pages/AddNewTypeTask';
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +35,9 @@ export default function Router() {
         { path: 'role', element: <Role /> },
         { path: 'add-new-role', element: <AddNewRole /> },
         { path: 'edit-role/:id', element: <AddNewRole /> },
+        { path: 'type-task', element: <TypeTask /> },
+        { path: 'add-new-typetask', element: <AddNewTypeTask /> },
+        { path: 'edit-typetask/:id', element: <AddNewTypeTask /> },
         { path: 'add-new-task', element: <AddNewTask /> },
         { path: 'edit-task/:id', element: <AddNewTask /> },
         { path: 'task-info/:id', element: <TaskInfo /> },
