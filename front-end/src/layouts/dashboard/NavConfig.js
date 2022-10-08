@@ -26,6 +26,11 @@ const navConfig = [
     path: '/dashboard/role',
     icon: getIcon('eva:clipboard-fill'),
   },
+  {
+    title: 'Quản lý loại công việc',
+    path: '/dashboard/type-task',
+    icon: getIcon('eva:clipboard-fill'),
+  },
 ];
 
 export default navConfig;
