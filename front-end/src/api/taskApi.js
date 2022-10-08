@@ -8,6 +8,7 @@ const userApi = {
   add: (data) => axiosClient.post(url, data),
   update: (data, id) => axiosClient.put(`${url}/${id}`, data),
   delete: (id) => axiosClient.delete(`${url}/${id}`),
+  getTaskByUser: (id) => axiosClient.get(`${url}/user/${id}`),
 };
 
 export default userApi;

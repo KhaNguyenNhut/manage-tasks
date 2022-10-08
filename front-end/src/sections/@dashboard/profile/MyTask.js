@@ -1,9 +1,12 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import taskApi from '../../../api/taskApi';
+import TaskTable from './TaskTable';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -40,7 +43,22 @@ function a11yProps(index) {
 
 export default function MyTask() {
   const [value, setValue] = React.useState(0);
-  const curentUser = JSON.parse(localStorage.getItem('user'));
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await taskApi.getTaskByUser(currentUser._id);
+      setTasks(response);
+    };
+
+    getData();
+  }, [currentUser._id]);
+
+  const todoTask = tasks.filter((each) => each.status === 'Đang chờ thực hiện');
+  const inprogressTask = tasks.filter((each) => each.status === 'Đang thực hiện');
+  const completedTask = tasks.filter((each) => each.status === 'Hoàn thành');
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -55,13 +73,13 @@ export default function MyTask() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        Đang chờ thực hiện
+        <TaskTable tasks={todoTask} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Đang thực hiện
+        <TaskTable tasks={inprogressTask} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Hoàn Thành
+        <TaskTable tasks={completedTask} />
       </TabPanel>
     </Box>
   );
