@@ -156,7 +156,7 @@ export default function User() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h4" gutterBottom>
-            User
+            Người dùng
           </Typography>
           <Button
             variant="contained"
@@ -164,7 +164,7 @@ export default function User() {
             to="/dashboard/add-new-user"
             startIcon={<Iconify icon="eva:plus-fill" />}
           >
-            Add a User
+            Thêm người dùng
           </Button>
         </Stack>
 

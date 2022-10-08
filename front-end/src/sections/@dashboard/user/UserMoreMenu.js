@@ -39,14 +39,14 @@ export default function UserMoreMenu({ id, handleDeleteUser }) {
             <ListItemIcon>
               <Iconify icon="eva:trash-2-outline" width={24} height={24} />
             </ListItemIcon>
-            <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
+            <ListItemText primary="Xóa" primaryTypographyProps={{ variant: 'body2' }} />
           </MenuItem>
         )}
         <MenuItem component={RouterLink} to={`/dashboard/edit-user/${id}`} sx={{ color: 'text.secondary' }}>
           <ListItemIcon>
             <Iconify icon="eva:edit-fill" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Chỉnh sửa" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
     </>

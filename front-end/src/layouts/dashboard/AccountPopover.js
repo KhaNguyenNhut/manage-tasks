@@ -11,19 +11,9 @@ import MenuPopover from '../../components/MenuPopover';
 
 const MENU_OPTIONS = [
   {
-    label: 'Home',
-    icon: 'eva:home-fill',
-    linkTo: '/',
-  },
-  {
-    label: 'Profile',
+    label: 'Thông tin cá nhân',
     icon: 'eva:person-fill',
-    linkTo: '#',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-    linkTo: '#',
+    linkTo: '/dashboard/profile',
   },
 ];
 
@@ -32,7 +22,6 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const anchorRef = useRef(null);
   const currentUser = JSON.parse(localStorage.getItem('user'));
-  MENU_OPTIONS[1].linkTo = `/dashboard/edit-user/${currentUser._id}`;
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(null);
@@ -75,7 +64,7 @@ export default function AccountPopover() {
       <MenuPopover
         open={Boolean(open)}
         anchorEl={open}
-        onClose={handleClose}
+        onClose={() => handleClose()}
         sx={{
           p: 0,
           mt: 1.5,
@@ -108,7 +97,7 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <MenuItem onClick={() => handleClose(true)} sx={{ m: 1 }}>
-          Logout
+          Đăng xuất
         </MenuItem>
       </MenuPopover>
     </>

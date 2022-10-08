@@ -20,7 +20,7 @@ exports.getUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    let user = await User.findById(req.params.id);
+    let user = await User.findById(req.params.id).populate('role');
     if (!user) {
       res.status(400).json({ message: 'Not found user' });
     }

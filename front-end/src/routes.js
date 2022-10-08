@@ -11,6 +11,7 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Task from './pages/Task';
 import User from './pages/User';
+import Profile from './pages/Profile';
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +23,7 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
+        { path: 'profile', element: <Profile /> },
         { path: 'add-new-user', element: <AddNewUser /> },
         { path: 'edit-user/:id', element: <AddNewUser /> },
         { path: 'task', element: <Task /> },

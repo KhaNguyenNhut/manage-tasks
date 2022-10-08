@@ -1,11 +1,11 @@
 import { Container, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
-import AddUserForm from '../sections/@dashboard/user/AddUserForm';
-import Page from '../components/Page';
 import userApi from '../api/userApi';
+import Page from '../components/Page';
+import ProfileForm from '../sections/@dashboard/profile/ProfileForm';
 
-function AddNewUser() {
+function Profile() {
   const { id } = useParams();
   const [user, setUser] = useState();
   const isEditUser = !!id;
@@ -24,17 +24,21 @@ function AddNewUser() {
     }
   }, [isEditUser, id]);
   return (
-    <Page title="Add New User">
+    <Page title="Thông Tin Cá Nhân">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h4" gutterBottom>
-            {isEditUser ? 'Chỉnh Sửa Thông Tin' : 'Tạo Người Dùng'}
+            Thông Tin Cá Nhân
           </Typography>
         </Stack>
-        {!isEditUser || (isEditUser && user) ? <AddUserForm user={user} /> : <p>Loading...</p>}
+        {!isEditUser || (isEditUser && user) ? <ProfileForm user={user} /> : <p>Loading...</p>}
+
+        <Typography variant="h4" gutterBottom className="my-8">
+          Công việc
+        </Typography>
       </Container>
     </Page>
   );
 }
 
-export default AddNewUser;
+export default Profile;

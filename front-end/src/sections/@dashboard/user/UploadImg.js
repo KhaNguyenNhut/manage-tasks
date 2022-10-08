@@ -52,7 +52,7 @@ export default function UploadImg({ onChange, images, user }) {
                 alt=""
                 onClick={() => onImageUpdate(0)}
               />
-              <p className="mt-4 text-sm text-gray-600">Allowed *.jpeg, *.jpg, *.png, *.gif</p>
+              <p className="mt-4 text-sm text-gray-600">Cho phép định dạng *.jpeg, *.jpg, *.png, *.gif</p>
             </div>
           )}
         </div>
