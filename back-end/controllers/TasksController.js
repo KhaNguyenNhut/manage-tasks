@@ -60,3 +60,14 @@ exports.deleteTask = async (req, res) => {
     res.status(400).json({ message: err });
   }
 };
+
+exports.getTaskByUser = async (req, res) => {
+  try {
+    const tasks = await Task.find({ user: req.params.id })
+      .sort({ createdAt: -1 })
+      .populate('user taskType supervisor');
+    res.status(200).json(tasks);
+  } catch (err) {
+    res.status(400).json({ message: err });
+  }
+};
