@@ -7,6 +7,7 @@ const authRoutes = require('./authRoutes');
 const usersRoutes = require('./usersRoutes');
 const taskTypesRoutes = require('./taskTypesRoutes');
 const tasksRoutes = require('./tasksRoutes');
+const discussionsRoutes = require('./discussionsRoutes');
 
 app.use('/access', accessesRoutes);
 app.use('/role', rolesRoutes);
@@ -14,5 +15,6 @@ app.use('/auth', authRoutes);
 app.use('/user', usersRoutes);
 app.use('/taskType', taskTypesRoutes);
 app.use('/task', tasksRoutes);
+app.use('/discussion', discussionsRoutes);
 
 module.exports = app;
