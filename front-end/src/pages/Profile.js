@@ -35,7 +35,7 @@ function Profile() {
         {!isEditUser || (isEditUser && user) ? <ProfileForm user={user} /> : <p>Loading...</p>}
 
         <Typography variant="h4" gutterBottom className="my-8">
-          Công việc
+          Danh Sách Công việc
         </Typography>
 
         <MyTask />

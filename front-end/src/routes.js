@@ -12,6 +12,7 @@ import Register from './pages/Register';
 import Task from './pages/Task';
 import User from './pages/User';
 import Profile from './pages/Profile';
+import TaskInfo from './pages/TaskInfo';
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +30,7 @@ export default function Router() {
         { path: 'task', element: <Task /> },
         { path: 'add-new-task', element: <AddNewTask /> },
         { path: 'edit-task/:id', element: <AddNewTask /> },
+        { path: 'task-info/:id', element: <TaskInfo /> },
       ],
     },
     {
