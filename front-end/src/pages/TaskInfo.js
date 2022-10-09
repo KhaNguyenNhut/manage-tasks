@@ -1,4 +1,4 @@
-import { Avatar, Button, Container, Typography } from '@mui/material';
+import { Avatar, Button, Container, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams, Link as RouterLink, useNavigate } from 'react-router-dom';
 import Page from '../components/Page';
@@ -77,7 +77,9 @@ function TaskInfo() {
                       >
                         <div className="flex w-8/12">
                           <p className="mr-2 text-blue-600 w-fit">{each.taskType.name}</p>
+                          <Tooltip title={each.topic}>
                           <p className="truncate max-w-[60%]">{each.topic}</p>
+                          </Tooltip>
                         </div>
                         <div className="flex items-center justify-end w-4/12 ml-4">
                           <Avatar
