@@ -17,6 +17,8 @@ import AddNewRole from './pages/AddNewRole';
 import TaskInfo from './pages/TaskInfo';
 import TypeTask from './pages/TypeTask';
 import AddNewTypeTask from './pages/AddNewTypeTask';
+import AddNewSubTask from './pages/AddNewSubTask';
+import SubtaskInfo from './pages/SubtaskInfo';
 
 // ----------------------------------------------------------------------
 
@@ -39,8 +41,11 @@ export default function Router() {
         { path: 'add-new-typetask', element: <AddNewTypeTask /> },
         { path: 'edit-typetask/:id', element: <AddNewTypeTask /> },
         { path: 'add-new-task', element: <AddNewTask /> },
+        { path: 'add-sub-task/:id', element: <AddNewSubTask /> },
+        { path: 'add-sub-task/:id/subtask/:subtaskId', element: <AddNewSubTask /> },
         { path: 'edit-task/:id', element: <AddNewTask /> },
         { path: 'task-info/:id', element: <TaskInfo /> },
+        { path: 'subtask-info/:id', element: <SubtaskInfo /> },
       ],
     },
     {

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import discussionApi from '../../api/discussionApi';
 import ListComment from './ListComment';
 
-function Comment() {
+function Comment({ isSubtask }) {
   const { id } = useParams();
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const [commentValue, setCommentValue] = useState('');
@@ -12,20 +12,31 @@ function Comment() {
 
   useEffect(() => {
     const getDate = async () => {
-      const response = await discussionApi.getTaskByTask(id);
-      setComments(response || []);
+      if (isSubtask) {
+        const response = await discussionApi.getTaskBySubtask(id);
+        setComments(response || []);
+      } else {
+        const response = await discussionApi.getTaskByTask(id);
+        setComments(response || []);
+      }
     };
 
     getDate();
-  }, [id]);
+  }, [id, isSubtask]);
 
   const handleComment = async () => {
     if (commentValue) {
       const data = {
         user: currentUser._id,
         task: id,
+        subtask: id,
         content: commentValue,
       };
+      if (isSubtask) {
+        delete data.task;
+      } else {
+        delete data.subtask;
+      }
       const response = await discussionApi.add(data);
       response.user = currentUser;
       setComments([response, ...comments]);
@@ -39,6 +50,12 @@ function Comment() {
     }
   };
 
+  const onDeleteComment = async (id) => {
+    const newComments = comments.filter((each) => each._id !== id);
+    setComments(newComments);
+    await discussionApi.delete(id);
+  };
+
   return (
     <div>
       <div className="flex mt-4">
@@ -46,7 +63,7 @@ function Comment() {
           alt={currentUser.fullName}
           src={currentUser.avatar ? process.env.REACT_APP_URL_IMG + currentUser.avatar : ''}
         />
-        <div className="ml-4 w-full">
+        <div className="w-full ml-4">
           <TextField
             fullWidth
             type="text"
@@ -64,7 +81,7 @@ function Comment() {
           </div>
         </div>
       </div>
-      <ListComment comments={comments} />
+      <ListComment comments={comments} onDeleteComment={onDeleteComment} />
     </div>
   );
 }

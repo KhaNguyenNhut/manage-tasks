@@ -29,6 +29,17 @@ exports.getDiscussionByTask = async (req, res) => {
   }
 };
 
+exports.getDiscussionBySubtask = async (req, res) => {
+  try {
+    const discussions = await Discussion.find({
+      subtask: req.params.id,
+    }).populate('user');
+    res.status(200).json(discussions);
+  } catch (err) {
+    res.status(400).json({ message: 'Not found discussions' });
+  }
+};
+
 exports.createDiscussion = async (req, res) => {
   try {
     const discussion = await Discussion.create(req.body);
