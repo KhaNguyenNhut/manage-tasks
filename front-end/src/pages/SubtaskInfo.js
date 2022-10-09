@@ -32,12 +32,20 @@ function SubTaskInfo() {
       <Container>
         {subtask && (
           <div className="p-8 bg-white shadow-xl rounded-2xl">
-            <Link
-              to={`/dashboard/task-info/${subtask.task}`}
-              className="duration-300 cursor-pointer hover:text-blue-500 no-underline text-[#333]"
-            >
-              <i className="fa-solid fa-chevron-left" /> Quay lại
-            </Link>
+            <div className="flex justify-between">
+              <Link
+                to={`/dashboard/task-info/${subtask.task}`}
+                className="duration-300 cursor-pointer hover:text-blue-500 no-underline text-[#333] w-fit"
+              >
+                <i className="fa-solid fa-chevron-left" /> Quay lại
+              </Link>
+              <Link
+                to={`/dashboard/edit-subtask/${subtask.task}/subtask/${subtask._id}`}
+                className="duration-300 cursor-pointer hover:text-blue-500 no-underline text-[#333] w-fit"
+              >
+                <i className="fa-solid fa-pen" /> Chỉnh Sửa
+              </Link>
+            </div>
             <p className="mb-8 text-2xl font-bold text-center">THÔNG TIN NHIỆM VỤ</p>
             <div className="flex">
               <div className="w-8/12 pr-2 mr-2">

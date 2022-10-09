@@ -42,7 +42,7 @@ export default function Router() {
         { path: 'edit-typetask/:id', element: <AddNewTypeTask /> },
         { path: 'add-new-task', element: <AddNewTask /> },
         { path: 'add-sub-task/:id', element: <AddNewSubTask /> },
-        { path: 'add-sub-task/:id/subtask/:subtaskId', element: <AddNewSubTask /> },
+        { path: 'edit-subtask/:id/subtask/:subtaskId', element: <AddNewSubTask /> },
         { path: 'edit-task/:id', element: <AddNewTask /> },
         { path: 'task-info/:id', element: <TaskInfo /> },
         { path: 'subtask-info/:id', element: <SubtaskInfo /> },

@@ -77,7 +77,11 @@ export default function AddSubTaskForm({ task, subtask }) {
         } else {
           await subtaskApi.update(formik.values, subtask._id);
         }
-        navigate(`/dashboard/task-info/${id}`, { replace: true });
+        if (isEditTask) {
+          navigate(`/dashboard/subtask-info/${subtaskId}`, { replace: true });
+        } else {
+          navigate(`/dashboard/task-info/${id}`, { replace: true });
+        }
       } catch ({ response }) {
         // setShowError(true);
       }
@@ -135,8 +139,8 @@ export default function AddSubTaskForm({ task, subtask }) {
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack className="p-8 rounded-lg shadow-lg" spacing={3}>
           <Link
-            to={`/dashboard/task-info/${id}`}
-            className="duration-300 cursor-pointer hover:text-blue-500 no-underline text-[#333]"
+            to={`/dashboard/${!isEditTask ? `task-info/${id}` : `subtask-info/${subtaskId}`}`}
+            className="duration-300 cursor-pointer hover:text-blue-500 no-underline text-[#333] w-fit"
           >
             <i className="fa-solid fa-chevron-left" /> Quay lại
           </Link>
