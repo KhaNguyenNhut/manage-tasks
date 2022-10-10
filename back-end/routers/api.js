@@ -9,6 +9,7 @@ const taskTypesRoutes = require('./taskTypesRoutes');
 const tasksRoutes = require('./tasksRoutes');
 const discussionsRoutes = require('./discussionsRoutes');
 const subtasksRoutes = require('./subtasksRoutes');
+const notificationsRoutes = require('./notificationsRoutes');
 
 app.use('/access', accessesRoutes);
 app.use('/role', rolesRoutes);
@@ -18,5 +19,6 @@ app.use('/taskType', taskTypesRoutes);
 app.use('/task', tasksRoutes);
 app.use('/discussion', discussionsRoutes);
 app.use('/subtask', subtasksRoutes);
+app.use('/notification', notificationsRoutes);
 
 module.exports = app;

@@ -1,4 +1,5 @@
 const SubTask = require('../models/SubTask');
+const { createNotification } = require('./NotificationsController');
 
 exports.getAllSubTasks = async (req, res) => {
   try {
@@ -26,6 +27,17 @@ exports.getSubTask = async (req, res) => {
 exports.createSubTask = async (req, res) => {
   try {
     const subtask = await SubTask.create(req.body);
+
+    //add notification
+    const data = {
+      task: req.body.task,
+      subtask: subtask._id,
+      assigner: req.body.user,
+      supervisor: req.body.supervisor,
+      notifyType: 'CreateSubtask',
+    };
+    await createNotification(data);
+
     res.status(200).json(subtask);
   } catch (err) {
     res.status(400).json({ message: err });
@@ -42,6 +54,17 @@ exports.updateSubTask = async (req, res) => {
       new: true,
       runValidators: true,
     });
+
+    //add notification
+    const data = {
+      task: req.body.task,
+      subtask: subtask._id,
+      assigner: req.body.user,
+      supervisor: req.body.supervisor,
+      notifyType: 'UpdateSubtask',
+    };
+    await createNotification(data);
+
     res.status(200).json(subtask);
   } catch (err) {
     res.status(400).json({ message: err });

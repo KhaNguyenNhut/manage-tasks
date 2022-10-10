@@ -1,4 +1,5 @@
 const Task = require('../models/Task');
+const { createNotification } = require('./NotificationsController');
 
 exports.getAllTasks = async (req, res) => {
   try {
@@ -25,6 +26,16 @@ exports.getTask = async (req, res) => {
 exports.createTask = async (req, res) => {
   try {
     const task = await Task.create(req.body);
+
+    //add notification
+    const data = {
+      task: task._id,
+      assigner: req.body.user,
+      supervisor: req.body.supervisor,
+      notifyType: 'CreateTask',
+    };
+    await createNotification(data);
+
     res.status(200).json(task);
   } catch (err) {
     res.status(400).json({ message: err });
@@ -41,6 +52,15 @@ exports.updateTask = async (req, res) => {
       new: true,
       runValidators: true,
     });
+    //add notification
+    const data = {
+      task: task._id,
+      assigner: req.body.user,
+      supervisor: req.body.supervisor,
+      notifyType: 'UpdateTask',
+    };
+    await createNotification(data);
+
     res.status(200).json(task);
   } catch (err) {
     res.status(400).json({ message: err });

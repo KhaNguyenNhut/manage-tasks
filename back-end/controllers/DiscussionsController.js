@@ -1,4 +1,7 @@
 const Discussion = require('../models/Discussion');
+const Task = require('../models/Task');
+const SubTask = require('../models/SubTask');
+const { createNotification } = require('./NotificationsController');
 
 exports.getAllDiscussions = async (req, res) => {
   try {
@@ -43,8 +46,29 @@ exports.getDiscussionBySubtask = async (req, res) => {
 exports.createDiscussion = async (req, res) => {
   try {
     const discussion = await Discussion.create(req.body);
+    // //add notification
+    // const data = {
+    //   task: req.body.task,
+    //   subtask: req.body.subtask,
+    //   commentBy: req.body.user,
+    //   notifyType: 'Comment',
+    //   message: req.body.content,
+    // };
+    // if (req.body.task) {
+    //   const task = await Task.findById(req.body.task);
+    //   data.assigner = task.user;
+    //   data.supervisor = task.supervisor;
+    //   await createNotification(data);
+    // } else {
+    //   const subtask = await SubTask.findById(req.body.subtask);
+    //   data.assigner = subtask.user;
+    //   data.supervisor = subtask.supervisor;
+    //   await createNotification(data);
+    // }
+
     res.status(200).json(discussion);
   } catch (err) {
+    console.log(err);
     res.status(400).json({ message: err });
   }
 };
