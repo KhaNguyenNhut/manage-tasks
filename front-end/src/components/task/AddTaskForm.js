@@ -1,6 +1,6 @@
 import { Form, FormikProvider, useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 // material
@@ -23,6 +23,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import taskApi from '../../api/taskApi';
 import taskTypeApi from '../../api/taskTypeApi';
 import userApi from '../../api/userApi';
+import SocketContext from '../../contexts/SocketContext';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +42,7 @@ export default function AddTaskForm({ task }) {
   const supervisors = users.filter((each) => each.role.name === 'Admin' || each.role.name === 'Manager');
   const { transcript, listening, browserSupportsSpeechRecognition } = useSpeechRecognition();
   const [fieldRecord, setFieldRecord] = useState('');
+  const { socket } = useContext(SocketContext);
 
   const LoginSchema = Yup.object().shape({
     taskType: Yup.string().required('Loại công việc không thể để trống!'),
@@ -71,9 +73,11 @@ export default function AddTaskForm({ task }) {
       try {
         formik.values.startDate = startDate;
         if (!isEditTask) {
-          await taskApi.add(formik.values);
+          const response = await taskApi.add(formik.values);
+          socket.emit('send_notification', response);
         } else {
-          await taskApi.update(formik.values, task._id);
+          const response = await taskApi.update(formik.values, task._id);
+          socket.emit('send_notification', response);
         }
         navigate('/dashboard/task', { replace: true });
       } catch ({ response }) {

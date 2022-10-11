@@ -10,54 +10,86 @@ exports.getNotificationByUser = async (req, res) => {
       $or: [{ assigner: userId }, { supervisor: userId }],
     });
 
-    notifications.forEach(async (each, index) => {
-      if (
-        each.notifyType === 'UpdateSubtask' ||
-        each.notifyType === 'CreateSubtask'
-      ) {
-        notifications[index].assigner = await User.findById(each.assigner);
-        notifications[index].supervisor = await User.findById(each.supervisor);
-        notifications[index].task = await Task.findById(each.task);
-        notifications[index].subtask = await SubTask.findById(each.subtask);
-      }
-      if (
-        each.notifyType === 'CreateTask' ||
-        each.notifyType === 'UpdateTask'
-      ) {
-        notifications[index].assigner = await User.findById(each.assigner);
-        notifications[index].supervisor = await User.findById(each.supervisor);
-        notifications[index].task = await Task.findById(each.task);
-      }
-
-      // if (each.notifyType === 'Comment') {
-      //   if (notifications[index].task) {
-      //     notifications[index].task = await Task.findById(each.task);
-      //   }
-
-      //   if (notifications[index].subtask) {
-      //     notifications[index].subtask = await SubTask.findById(each.subtask);
-      //   }
-      //   notifications[index].assigner = await User.findById(each.assigner);
-      //   notifications[index].supervisor = await User.findById(each.supervisor);
-      // }
-
-      if (notifications.length - 1 === index) {
-        res.status(200).json(notifications);
-      }
-    });
-    if (notifications.length === 0) {
-      res.status(200).json(notifications);
-    }
+    res.status(200).json(await parseNotifications(notifications));
   } catch (err) {
     console.log(err);
     res.status(400).json({ message: err });
   }
 };
 
+const parseNotifications = async (notifications) => {
+  for (let index = 0; index < notifications.length; index++) {
+    if (
+      notifications[index].notifyType === 'UpdateSubtask' ||
+      notifications[index].notifyType === 'CreateSubtask'
+    ) {
+      notifications[index].assigner = await User.findById(
+        notifications[index].assigner
+      );
+      notifications[index].supervisor = await User.findById(
+        notifications[index].supervisor
+      );
+      notifications[index].task = await Task.findById(
+        notifications[index].task
+      );
+      notifications[index].subtask = await SubTask.findById(
+        notifications[index].subtask
+      );
+    }
+    if (
+      notifications[index].notifyType === 'CreateTask' ||
+      notifications[index].notifyType === 'UpdateTask'
+    ) {
+      notifications[index].assigner = await User.findById(
+        notifications[index].assigner
+      );
+      notifications[index].supervisor = await User.findById(
+        notifications[index].supervisor
+      );
+      notifications[index].task = await Task.findById(
+        notifications[index].task
+      );
+    }
+  }
+  return notifications;
+};
+
 exports.createNotification = async (data) => {
   try {
     const notification = await Notification.create(data);
+    return notification;
   } catch (err) {
     console.log(err);
+  }
+};
+
+exports.getNotification = async (notification) => {
+  if (
+    notification.notifyType === 'UpdateSubtask' ||
+    notification.notifyType === 'CreateSubtask'
+  ) {
+    notification.assigner = await User.findById(notification.assigner);
+    notification.supervisor = await User.findById(notification.supervisor);
+    notification.task = await Task.findById(notification.task);
+    notification.subtask = await SubTask.findById(notification.subtask);
+  }
+  if (
+    notification.notifyType === 'CreateTask' ||
+    notification.notifyType === 'UpdateTask'
+  ) {
+    notification.assigner = await User.findById(notification.assigner);
+    notification.supervisor = await User.findById(notification.supervisor);
+    notification.task = await Task.findById(notification.task);
+  }
+  return notification;
+};
+
+exports.markAsRead = async (req, res) => {
+  try {
+    req.body.forEach(async (notifyId) => {
+      await Notification.findOneAndUpdate({ _id: notifyId }, { isRead: true });
+    });
+  } catch (err) {
+    res.status(400).json({ message: err });
   }
 };

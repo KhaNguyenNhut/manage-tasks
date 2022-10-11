@@ -8,6 +8,7 @@ const routers = require('./routers/api');
 const bodyParser = require('body-parser');
 const path = require('path');
 const http = require('http');
+const { Server } = require('socket.io');
 
 const server = http.createServer(app);
 const originAllow = 'http://localhost:3000';
@@ -22,6 +23,24 @@ app.use(
     origin: originAllow,
   })
 );
+
+const io = new Server(server, {
+  cors: {
+    origin: originAllow,
+  },
+});
+
+io.on('connection', (socket) => {
+  socket.on('subscribe-notification', (userId) => {
+    socket.join(userId);
+  });
+
+  socket.on('send_notification', async (data) => {
+    console.log('data', data.supervisor._id, data.assigner._idv);
+    io.to(data.supervisor._id).emit('receive_notification', data);
+    io.to(data.assigner._id).emit('receive_notification', data);
+  });
+});
 
 let allowCrossDomain = function (req, res, next) {
   res.header('Cross-Origin-Resource-Policy', originAllow);

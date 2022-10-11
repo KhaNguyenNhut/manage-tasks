@@ -14,6 +14,7 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
+  Tooltip,
   Typography,
 } from '@mui/material';
 // components
@@ -204,7 +205,9 @@ export default function Task() {
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                     <TableRow hover key={row._id} tabIndex={-1}>
                       <TableCell align="left">{row.taskType.name}</TableCell>
-                      <TableCell align="left">{row.topic}</TableCell>
+                      <Tooltip title={row.topic}>
+                        <TableCell align="left truncate max-w-[100px]">{row.topic}</TableCell>
+                      </Tooltip>
                       <TableCell align="left">
                         <div className="flex items-center">
                           <Avatar

@@ -65,6 +65,7 @@
     "react-speech-recognition": "^3.9.1",
     "simplebar": "^5.3.6",
     "simplebar-react": "^2.3.6",
+    "socket.io-client": "^4.5.2",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },

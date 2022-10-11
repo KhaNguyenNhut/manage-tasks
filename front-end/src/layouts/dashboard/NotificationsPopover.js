@@ -1,11 +1,10 @@
 import { noCase } from 'change-case';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 // @mui
 import {
   Avatar,
   Badge,
   Box,
-  Button,
   Divider,
   IconButton,
   List,
@@ -24,6 +23,7 @@ import notificationApi from '../../api/notificationApi';
 import Iconify from '../../components/Iconify';
 import MenuPopover from '../../components/MenuPopover';
 import Scrollbar from '../../components/Scrollbar';
+import SocketContext from '../../contexts/SocketContext';
 // ----------------------------------------------------------------------
 
 export default function NotificationsPopover() {
@@ -31,13 +31,30 @@ export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState([]);
   const totalUnRead = notifications.filter((item) => item.isRead === false).length;
   const [open, setOpen] = useState(null);
+  const { socket } = useContext(SocketContext);
+
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const readNotification = notifications.filter((each) => each.isRead === true);
   const unreadNotification = notifications.filter((each) => each.isRead === false);
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit('subscribe-notification', currentUser._id);
+    }
+  }, [socket, currentUser._id]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('receive_notification', (data) => {
+        console.log('receive_notification', data);
+        setNotifications([data, ...notifications]);
+      });
+    }
+  }, [socket, notifications]);
+
   useEffect(() => {
     const getData = async () => {
       const response = await notificationApi.getByUser(currentUser._id);
-      console.log(response);
       setNotifications(response);
     };
 
@@ -50,6 +67,18 @@ export default function NotificationsPopover() {
 
   const handleClose = () => {
     setOpen(null);
+    const newArray = [...notifications];
+    const notificationUnReadIds = [];
+    newArray.forEach((each, index) => {
+      if (each.isRead === false) {
+        notificationUnReadIds.push(each._id);
+      }
+      newArray[index].isRead = true;
+    });
+    setNotifications(newArray);
+    if (notificationUnReadIds.length > 0) {
+      notificationApi.markRead(notificationUnReadIds);
+    }
   };
 
   const handleMarkAllAsRead = () => {
@@ -79,7 +108,6 @@ export default function NotificationsPopover() {
         anchorEl={open}
         onClose={handleClose}
         sx={{ width: 550, p: 0, mt: 1.5, ml: 0.75 }}
-        className="overflow-auto max-h-[550px]"
       >
         <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
@@ -100,7 +128,7 @@ export default function NotificationsPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
+        <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }} className="overflow-auto max-h-[350px]">
           <List
             disablePadding
             subheader={
@@ -112,6 +140,8 @@ export default function NotificationsPopover() {
             {unreadNotification.map((notification) => (
               <NotificationItem key={notification._id} notification={notification} />
             ))}
+
+            {unreadNotification.length === 0 && <p className="text-sm text-center">Không có thông báo mới!</p>}
           </List>
 
           <List
@@ -127,14 +157,7 @@ export default function NotificationsPopover() {
             ))}
           </List>
         </Scrollbar>
-
         <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <Box sx={{ p: 1 }}>
-          <Button fullWidth disableRipple>
-            View All
-          </Button>
-        </Box>
       </MenuPopover>
     </>
   );

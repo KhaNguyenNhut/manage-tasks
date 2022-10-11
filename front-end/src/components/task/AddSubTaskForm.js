@@ -1,6 +1,6 @@
 import { Form, FormikProvider, useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 // material
@@ -23,6 +23,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import subtaskApi from '../../api/subtaskApi';
 import taskTypeApi from '../../api/taskTypeApi';
 import userApi from '../../api/userApi';
+import SocketContext from '../../contexts/SocketContext';
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ export default function AddSubTaskForm({ task, subtask }) {
   const supervisors = users.filter((each) => each.role.name === 'Admin' || each.role.name === 'Manager');
   const { transcript, listening, browserSupportsSpeechRecognition } = useSpeechRecognition();
   const [fieldRecord, setFieldRecord] = useState('');
+  const { socket } = useContext(SocketContext);
 
   const LoginSchema = Yup.object().shape({
     taskType: Yup.string().required('Loại công việc không thể để trống!'),
@@ -73,9 +75,11 @@ export default function AddSubTaskForm({ task, subtask }) {
       try {
         formik.values.startDate = startDate;
         if (!isEditTask) {
-          await subtaskApi.add(formik.values);
+          const response = await subtaskApi.add(formik.values);
+          socket.emit('send_notification', response);
         } else {
-          await subtaskApi.update(formik.values, subtask._id);
+          const response = await subtaskApi.update(formik.values, subtask._id);
+          socket.emit('send_notification', response);
         }
         if (isEditTask) {
           navigate(`/dashboard/subtask-info/${subtaskId}`, { replace: true });
