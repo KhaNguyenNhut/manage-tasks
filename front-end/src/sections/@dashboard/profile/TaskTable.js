@@ -33,12 +33,16 @@ function taskTable({ tasks }) {
                 </div>
               </TableCell>
               <TableCell align="left">{row.topic}</TableCell>
-              <TableCell align="left">{row.content}</TableCell>
-              <TableCell align="left">{row.note}</TableCell>
+              <TableCell align="left" className="truncate max-w-[100px]">
+                {row.content}
+              </TableCell>
+              <TableCell align="left" className="truncate max-w-[100px]">
+                {row.note}
+              </TableCell>
               <TableCell align="left">{row.status}</TableCell>
               <TableCell align="left">{row.endDate.slice(0, 10)}</TableCell>
               <TableCell component={RouterLink} to={`/dashboard/task-info/${row._id}`} align="left">
-                <i className="fa-solid fa-circle-info text-xl cursor-pointer" />
+                <i className="text-xl cursor-pointer fa-solid fa-circle-info" />
               </TableCell>
             </TableRow>
           ))}

@@ -1,89 +1,65 @@
-import PropTypes from 'prop-types';
-import { set, sub } from 'date-fns';
 import { noCase } from 'change-case';
-import { faker } from '@faker-js/faker';
-import { useState, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 // @mui
 import {
-  Box,
-  List,
-  Badge,
-  Button,
   Avatar,
-  Tooltip,
+  Badge,
+  Box,
   Divider,
-  Typography,
   IconButton,
-  ListItemText,
-  ListSubheader,
+  List,
   ListItemAvatar,
   ListItemButton,
+  ListItemText,
+  ListSubheader,
+  Tooltip,
+  Typography,
 } from '@mui/material';
+import { Link } from 'react-router-dom';
 // utils
 import { fToNow } from '../../utils/formatTime';
 // components
+import notificationApi from '../../api/notificationApi';
 import Iconify from '../../components/Iconify';
-import Scrollbar from '../../components/Scrollbar';
 import MenuPopover from '../../components/MenuPopover';
-
+import Scrollbar from '../../components/Scrollbar';
+import SocketContext from '../../contexts/SocketContext';
 // ----------------------------------------------------------------------
-
-const NOTIFICATIONS = [
-  {
-    id: faker.datatype.uuid(),
-    title: 'Your order is placed',
-    description: 'waiting for shipping',
-    avatar: null,
-    type: 'order_placed',
-    createdAt: set(new Date(), { hours: 10, minutes: 30 }),
-    isUnRead: true,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: faker.name.findName(),
-    description: 'answered to your comment on the Minimal',
-    avatar: '/static/mock-images/avatars/avatar_2.jpg',
-    type: 'friend_interactive',
-    createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
-    isUnRead: true,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new message',
-    description: '5 unread messages',
-    avatar: null,
-    type: 'chat_message',
-    createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new mail',
-    description: 'sent from Guido Padberg',
-    avatar: null,
-    type: 'mail',
-    createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'Delivery processing',
-    description: 'Your order is being shipped',
-    avatar: null,
-    type: 'order_shipped',
-    createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-];
 
 export default function NotificationsPopover() {
   const anchorRef = useRef(null);
-
-  const [notifications, setNotifications] = useState(NOTIFICATIONS);
-
-  const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
-
+  const [notifications, setNotifications] = useState([]);
+  const totalUnRead = notifications.filter((item) => item.isRead === false).length;
   const [open, setOpen] = useState(null);
+  const { socket } = useContext(SocketContext);
+
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const readNotification = notifications.filter((each) => each.isRead === true);
+  const unreadNotification = notifications.filter((each) => each.isRead === false);
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit('subscribe-notification', currentUser._id);
+    }
+  }, [socket, currentUser._id]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('receive_notification', (data) => {
+        console.log('receive_notification', data);
+        setNotifications([data, ...notifications]);
+      });
+    }
+  }, [socket, notifications]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await notificationApi.getByUser(currentUser._id);
+      setNotifications(response);
+    };
+
+    getData();
+  }, [currentUser._id]);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -91,6 +67,18 @@ export default function NotificationsPopover() {
 
   const handleClose = () => {
     setOpen(null);
+    const newArray = [...notifications];
+    const notificationUnReadIds = [];
+    newArray.forEach((each, index) => {
+      if (each.isRead === false) {
+        notificationUnReadIds.push(each._id);
+      }
+      newArray[index].isRead = true;
+    });
+    setNotifications(newArray);
+    if (notificationUnReadIds.length > 0) {
+      notificationApi.markRead(notificationUnReadIds);
+    }
   };
 
   const handleMarkAllAsRead = () => {
@@ -119,7 +107,7 @@ export default function NotificationsPopover() {
         open={Boolean(open)}
         anchorEl={open}
         onClose={handleClose}
-        sx={{ width: 360, p: 0, mt: 1.5, ml: 0.75 }}
+        sx={{ width: 550, p: 0, mt: 1.5, ml: 0.75 }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
@@ -140,7 +128,7 @@ export default function NotificationsPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
+        <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }} className="overflow-auto max-h-[350px]">
           <List
             disablePadding
             subheader={
@@ -149,9 +137,11 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.slice(0, 2).map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
+            {unreadNotification.map((notification) => (
+              <NotificationItem key={notification._id} notification={notification} />
             ))}
+
+            {unreadNotification.length === 0 && <p className="text-sm text-center">Không có thông báo mới!</p>}
           </List>
 
           <List
@@ -162,43 +152,24 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.slice(2, 5).map((notification) => (
+            {readNotification.map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </List>
         </Scrollbar>
-
         <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <Box sx={{ p: 1 }}>
-          <Button fullWidth disableRipple>
-            View All
-          </Button>
-        </Box>
       </MenuPopover>
     </>
   );
 }
 
-// ----------------------------------------------------------------------
-
-NotificationItem.propTypes = {
-  notification: PropTypes.shape({
-    createdAt: PropTypes.instanceOf(Date),
-    id: PropTypes.string,
-    isUnRead: PropTypes.bool,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    type: PropTypes.string,
-    avatar: PropTypes.any,
-  }),
-};
-
 function NotificationItem({ notification }) {
-  const { avatar, title } = renderContent(notification);
+  const { avatar, title, link } = renderContent(notification);
 
   return (
     <ListItemButton
+      component={Link}
+      to={link}
       sx={{
         py: 1.5,
         px: 2.5,
@@ -235,41 +206,85 @@ function NotificationItem({ notification }) {
 // ----------------------------------------------------------------------
 
 function renderContent(notification) {
-  const title = (
-    <Typography variant="subtitle2">
-      {notification.title}
-      <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {noCase(notification.description)}
-      </Typography>
-    </Typography>
-  );
+  if (notification.notifyType === 'UpdateSubtask') {
+    return {
+      link: `/dashboard/subtask-info/${notification.subtask._id}`,
+      avatar: <img alt="notification" src="/static/icons/ic_notification_package.svg" />,
+      title: (
+        <Typography variant="subtitle2">
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
+            &nbsp; Nhiệm vụ <span className="font-bold">{notification.subtask.topic}</span> đã được cập nhật thông tin!
+          </Typography>
+        </Typography>
+      ),
+    };
+  }
 
-  if (notification.type === 'order_placed') {
+  if (notification.notifyType === 'CreateSubtask') {
     return {
-      avatar: <img alt={notification.title} src="/static/icons/ic_notification_package.svg" />,
-      title,
+      link: `/dashboard/subtask-info/${notification.subtask._id}`,
+      avatar: <img alt="notification" src="/static/icons/ic_notification_package.svg" />,
+      title: (
+        <Typography variant="subtitle2">
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
+            &nbsp; Bạn được phân công làm nhiệm vụ <span className="font-bold">{notification.subtask.topic}</span>!
+          </Typography>
+        </Typography>
+      ),
     };
   }
-  if (notification.type === 'order_shipped') {
+
+  if (notification.notifyType === 'UpdateTask') {
     return {
-      avatar: <img alt={notification.title} src="/static/icons/ic_notification_shipping.svg" />,
-      title,
+      link: `/dashboard/task-info/${notification.task._id}`,
+      avatar: <img alt="notification" src="/static/icons/ic_notification_package.svg" />,
+      title: (
+        <Typography variant="subtitle2">
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
+            &nbsp; Công việc <span className="font-bold">{notification.task.topic}</span> đã được cập nhật thông tin!
+          </Typography>
+        </Typography>
+      ),
     };
   }
-  if (notification.type === 'mail') {
+
+  if (notification.notifyType === 'CreateTask') {
     return {
-      avatar: <img alt={notification.title} src="/static/icons/ic_notification_mail.svg" />,
-      title,
+      link: `/dashboard/task-info/${notification.task._id}`,
+      avatar: <img alt="notification" src="/static/icons/ic_notification_package.svg" />,
+      title: (
+        <Typography variant="subtitle2">
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
+            &nbsp; Bạn được phân công làm công việc <span className="font-bold">{notification.task.topic}</span>!
+          </Typography>
+        </Typography>
+      ),
     };
   }
-  if (notification.type === 'chat_message') {
+
+  if (notification.notifyType === 'Comment') {
     return {
-      avatar: <img alt={notification.title} src="/static/icons/ic_notification_chat.svg" />,
-      title,
+      link: `/dashboard/${notification.task ? 'task-info' : 'subtask-info'}/${
+        notification.task ? notification.task._id : notification.subtask._id
+      }`,
+      avatar: <img alt="notification" src="/static/icons/ic_notification_package.svg" />,
+      title: (
+        <Typography variant="subtitle2">
+          <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
+            &nbsp; Đã có người bình luận lên {notification.task ? 'công việc' : 'nhiệm vụ'} này!
+          </Typography>
+        </Typography>
+      ),
     };
   }
   return {
     avatar: notification.avatar ? <img alt={notification.title} src={notification.avatar} /> : null,
-    title,
+    title: (
+      <Typography variant="subtitle2">
+        <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
+          &nbsp; {noCase('notification.description')}
+        </Typography>
+      </Typography>
+    ),
   };
 }

@@ -3,7 +3,6 @@ import { LoadingButton } from '@mui/lab';
 import { Stack, TextField } from '@mui/material';
 import { Form, FormikProvider, useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 // component
@@ -17,23 +16,8 @@ AddRoleForm.protoTypes = {
 
 export default function AddRoleForm({ role }) {
   const navigate = useNavigate();
-  const [roles, setRoles] = useState([]);
   const { id } = useParams();
   const isEditUser = !!id;
-
-  useEffect(() => {
-    getRoles();
-  }, []);
-
-  const getRoles = async () => {
-    try {
-      const response = await roleApi.getRoles();
-      setRoles(response);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
 
   const LoginSchema = Yup.object().shape({
     name: Yup.string().required('Tên vai trò không thể để trống!'),
@@ -66,16 +50,16 @@ export default function AddRoleForm({ role }) {
         <Stack spacing={3}>
           <div className="flex items-center p-8 rounded shadow-xl">
             <div className="w-8/12 ml-6">
-            <div className="w-100 pr-2">
-                  <TextField
-                    fullWidth
-                    type="text"
-                    label="Tên vai trò*"
-                    {...getFieldProps('name')}
-                    error={Boolean(touched.name && errors.name)}
-                    helperText={touched.name && errors.name}
-                  />
-                </div>
+              <div className="pr-2 w-100">
+                <TextField
+                  fullWidth
+                  type="text"
+                  label="Tên vai trò*"
+                  {...getFieldProps('name')}
+                  error={Boolean(touched.name && errors.name)}
+                  helperText={touched.name && errors.name}
+                />
+              </div>
               <div className="flex items-center justify-center mt-8">
                 <LoadingButton size="large" type="submit" variant="contained" loading={isSubmitting} className="px-20">
                   Submit

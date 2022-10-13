@@ -1,7 +1,7 @@
 import { Form, FormikProvider, useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 // material
 import { DesktopDatePicker, LoadingButton, LocalizationProvider } from '@mui/lab';
@@ -20,25 +20,26 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 // component
-import taskApi from '../../api/taskApi';
+import subtaskApi from '../../api/subtaskApi';
 import taskTypeApi from '../../api/taskTypeApi';
 import userApi from '../../api/userApi';
 import SocketContext from '../../contexts/SocketContext';
 
 // ----------------------------------------------------------------------
 
-AddTaskForm.protoTypes = {
+AddSubTaskForm.protoTypes = {
   task: PropTypes.object,
+  subtask: PropTypes.object,
 };
 
-export default function AddTaskForm({ task }) {
+export default function AddSubTaskForm({ task, subtask }) {
   const navigate = useNavigate();
   const [taskTypes, setTaskTypes] = useState([]);
   const [users, setUsers] = useState([]);
-  const [startDate, setStartDate] = useState(dayjs(task && task.startDate ? task.startDate : new Date()));
-  const [endDate, setEndDate] = useState(dayjs(task && task.endDate ? task.endDate : new Date()));
-  const { id } = useParams();
-  const isEditTask = !!id;
+  const [startDate, setStartDate] = useState(dayjs(subtask && subtask.startDate ? subtask.startDate : new Date()));
+  const [endDate, setEndDate] = useState(dayjs(subtask && subtask.endDate ? subtask.endDate : new Date()));
+  const { id, subtaskId } = useParams();
+  const isEditTask = !!subtaskId;
   const supervisors = users.filter((each) => each.role.name === 'Admin' || each.role.name === 'Manager');
   const { transcript, listening, browserSupportsSpeechRecognition } = useSpeechRecognition();
   const [fieldRecord, setFieldRecord] = useState('');
@@ -56,30 +57,35 @@ export default function AddTaskForm({ task }) {
   });
   const formik = useFormik({
     initialValues: {
-      taskType: isEditTask ? task.taskType._id : '',
-      user: isEditTask ? task.user._id : '',
-      topic: isEditTask ? task.topic : '',
-      content: isEditTask ? task.content : '',
-      startDate: isEditTask ? task.startDate : dayjs(new Date()),
-      endDate: isEditTask ? task.endDate : dayjs(new Date()),
-      status: isEditTask ? task.status : 'Đang chờ thực hiện',
-      timeG: isEditTask ? task.timeG : '',
-      supervisor: isEditTask && task.supervisor ? task.supervisor._id : '',
-      note: isEditTask && task.note ? task.note : '',
-      progress: isEditTask && task.progress ? task.progress : 0,
+      task: id,
+      taskType: isEditTask ? subtask.taskType._id : '',
+      user: isEditTask ? subtask.user._id : '',
+      topic: isEditTask ? subtask.topic : '',
+      content: isEditTask ? subtask.content : '',
+      startDate: isEditTask ? subtask.startDate : dayjs(new Date()),
+      endDate: isEditTask ? subtask.endDate : dayjs(new Date()),
+      status: isEditTask ? subtask.status : 'Đang chờ thực hiện',
+      timeG: isEditTask ? subtask.timeG : '',
+      supervisor: isEditTask && subtask.supervisor ? subtask.supervisor._id : '',
+      note: isEditTask && subtask.note ? subtask.note : '',
+      progress: isEditTask && subtask.progress ? subtask.progress : 0,
     },
     validationSchema: LoginSchema,
     onSubmit: async () => {
       try {
         formik.values.startDate = startDate;
         if (!isEditTask) {
-          const response = await taskApi.add(formik.values);
+          const response = await subtaskApi.add(formik.values);
           socket.emit('send_notification', response);
         } else {
-          const response = await taskApi.update(formik.values, task._id);
+          const response = await subtaskApi.update(formik.values, subtask._id);
           socket.emit('send_notification', response);
         }
-        navigate('/dashboard/task', { replace: true });
+        if (isEditTask) {
+          navigate(`/dashboard/subtask-info/${subtaskId}`, { replace: true });
+        } else {
+          navigate(`/dashboard/task-info/${id}`, { replace: true });
+        }
       } catch ({ response }) {
         // setShowError(true);
       }
@@ -136,6 +142,13 @@ export default function AddTaskForm({ task }) {
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack className="p-8 rounded-lg shadow-lg" spacing={3}>
+          <Link
+            to={`/dashboard/${!isEditTask ? `task-info/${id}` : `subtask-info/${subtaskId}`}`}
+            className="duration-300 cursor-pointer hover:text-blue-500 no-underline text-[#333] w-fit"
+          >
+            <i className="fa-solid fa-chevron-left" /> Quay lại
+          </Link>
+          <p className="text-2xl font-bold">Công việc: {task.topic}</p>
           <div>
             <TextField
               fullWidth
@@ -311,7 +324,7 @@ export default function AddTaskForm({ task }) {
             </div>
             <div className="flex items-center justify-center mt-8">
               <LoadingButton size="large" type="submit" variant="contained" loading={isSubmitting} className="px-20">
-                {isEditTask ? 'Cập Nhật' : 'Tạo'} Công Việc
+                {isEditTask ? 'Cập Nhật' : 'Tạo'} Nhiệm Vụ
               </LoadingButton>
             </div>
           </div>
