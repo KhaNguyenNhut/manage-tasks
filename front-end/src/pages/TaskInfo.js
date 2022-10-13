@@ -7,6 +7,7 @@ import subtaskApi from '../api/subtaskApi';
 import Iconify from '../components/Iconify';
 import StatusDrop from '../components/task/StatusDrop';
 import Comment from '../components/task/Comment';
+import { checkPermissionCreateAndDelete } from '../utils/checkAccess';
 
 const isSubtask = false;
 
@@ -51,15 +52,17 @@ function TaskInfo() {
                 <p className="mt-4">
                   Loại công việc: <span className="font-semibold">{task.taskType.name}</span>
                 </p>
-                <Button
-                  variant="outlined"
-                  className="mt-4"
-                  component={RouterLink}
-                  to={`/dashboard/add-sub-task/${id}`}
-                  startIcon={<Iconify icon="eva:checkmark-square-2-outline" />}
-                >
-                  Tạo nhiệm vụ
-                </Button>
+                {checkPermissionCreateAndDelete() && (
+                  <Button
+                    variant="outlined"
+                    className="mt-4"
+                    component={RouterLink}
+                    to={`/dashboard/add-sub-task/${id}`}
+                    startIcon={<Iconify icon="eva:checkmark-square-2-outline" />}
+                  >
+                    Tạo nhiệm vụ
+                  </Button>
+                )}
                 <Typography sx={{ mt: 2 }} component={'div'}>
                   <p className="font-semibold">Nội dung</p>
                   <p>{task.content}</p>
@@ -78,7 +81,7 @@ function TaskInfo() {
                         <div className="flex w-8/12">
                           <p className="mr-2 text-blue-600 w-fit">{each.taskType.name}</p>
                           <Tooltip title={each.topic}>
-                          <p className="truncate max-w-[60%]">{each.topic}</p>
+                            <p className="truncate max-w-[60%]">{each.topic}</p>
                           </Tooltip>
                         </div>
                         <div className="flex items-center justify-end w-4/12 ml-4">

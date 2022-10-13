@@ -25,6 +25,7 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import userApi from '../api/userApi';
+import { checkPermissionCreateAndDelete } from '../utils/checkAccess';
 
 // ----------------------------------------------------------------------
 
@@ -158,14 +159,16 @@ export default function User() {
           <Typography variant="h4" gutterBottom>
             Người dùng
           </Typography>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="/dashboard/add-new-user"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
-            Thêm người dùng
-          </Button>
+          {checkPermissionCreateAndDelete() && (
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to="/dashboard/add-new-user"
+              startIcon={<Iconify icon="eva:plus-fill" />}
+            >
+              Thêm người dùng
+            </Button>
+          )}
         </Stack>
 
         <Card>

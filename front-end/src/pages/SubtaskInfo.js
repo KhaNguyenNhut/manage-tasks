@@ -1,6 +1,7 @@
 import { Avatar, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { checkPermissionEdit } from '../utils/checkAccess';
 import subtaskApi from '../api/subtaskApi';
 import Page from '../components/Page';
 import Comment from '../components/task/Comment';
@@ -39,12 +40,14 @@ function SubTaskInfo() {
               >
                 <i className="fa-solid fa-chevron-left" /> Quay lại
               </Link>
-              <Link
-                to={`/dashboard/edit-subtask/${subtask.task}/subtask/${subtask._id}`}
-                className="duration-300 cursor-pointer hover:text-blue-500 no-underline text-[#333] w-fit"
-              >
-                <i className="fa-solid fa-pen" /> Chỉnh Sửa
-              </Link>
+              {checkPermissionEdit() && (
+                <Link
+                  to={`/dashboard/edit-subtask/${subtask.task}/subtask/${subtask._id}`}
+                  className="duration-300 cursor-pointer hover:text-blue-500 no-underline text-[#333] w-fit"
+                >
+                  <i className="fa-solid fa-pen" /> Chỉnh Sửa
+                </Link>
+              )}
             </div>
             <p className="mb-8 text-2xl font-bold text-center">THÔNG TIN NHIỆM VỤ</p>
             <div className="flex">

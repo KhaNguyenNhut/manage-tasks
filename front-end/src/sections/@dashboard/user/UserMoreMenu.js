@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 // component
 import Iconify from '../../../components/Iconify';
 import userApi from '../../../api/userApi';
+import { checkPermissionCreateAndDelete, checkPermissionEdit } from '../../../utils/checkAccess';
 
 // ----------------------------------------------------------------------
 
@@ -20,9 +21,11 @@ export default function UserMoreMenu({ id, handleDeleteUser }) {
 
   return (
     <>
-      <IconButton ref={ref} onClick={() => setIsOpen(true)}>
-        <Iconify icon="eva:more-vertical-fill" width={20} height={20} />
-      </IconButton>
+      {checkPermissionEdit() && (
+        <IconButton ref={ref} onClick={() => setIsOpen(true)}>
+          <Iconify icon="eva:more-vertical-fill" width={20} height={20} />
+        </IconButton>
+      )}
 
       <Menu
         open={isOpen}
@@ -34,7 +37,7 @@ export default function UserMoreMenu({ id, handleDeleteUser }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        {currentUser._id !== id && (
+        {currentUser._id !== id && checkPermissionCreateAndDelete() && (
           <MenuItem sx={{ color: 'text.secondary' }} onClick={onDeleteUser}>
             <ListItemIcon>
               <Iconify icon="eva:trash-2-outline" width={24} height={24} />
@@ -42,12 +45,14 @@ export default function UserMoreMenu({ id, handleDeleteUser }) {
             <ListItemText primary="Xóa" primaryTypographyProps={{ variant: 'body2' }} />
           </MenuItem>
         )}
-        <MenuItem component={RouterLink} to={`/dashboard/edit-user/${id}`} sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Iconify icon="eva:edit-fill" width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Chỉnh sửa" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
+        {checkPermissionEdit() && (
+          <MenuItem component={RouterLink} to={`/dashboard/edit-user/${id}`} sx={{ color: 'text.secondary' }}>
+            <ListItemIcon>
+              <Iconify icon="eva:edit-fill" width={24} height={24} />
+            </ListItemIcon>
+            <ListItemText primary="Chỉnh sửa" primaryTypographyProps={{ variant: 'body2' }} />
+          </MenuItem>
+        )}
       </Menu>
     </>
   );

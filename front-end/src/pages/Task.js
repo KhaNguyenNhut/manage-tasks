@@ -28,6 +28,7 @@ import taskApi from '../api/taskApi';
 import TaskListToolbar from '../sections/@dashboard/task/TaskListToolbar';
 import TaskMoreMenu from '../sections/@dashboard/task/TaskMoreMenu';
 import TaskModal from '../components/task/TaskModal';
+import { checkPermissionCreateAndDelete } from '../utils/checkAccess';
 
 // ----------------------------------------------------------------------
 
@@ -177,14 +178,16 @@ export default function Task() {
           <Typography variant="h4" gutterBottom>
             Quản lý công việc
           </Typography>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="/dashboard/add-new-task"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
-            Thêm công việc
-          </Button>
+          {checkPermissionCreateAndDelete() && (
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to="/dashboard/add-new-task"
+              startIcon={<Iconify icon="eva:plus-fill" />}
+            >
+              Thêm công việc
+            </Button>
+          )}
         </Stack>
 
         <Card>
