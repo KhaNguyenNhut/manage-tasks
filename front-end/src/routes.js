@@ -19,6 +19,8 @@ import TypeTask from './pages/TypeTask';
 import AddNewTypeTask from './pages/AddNewTypeTask';
 import AddNewSubTask from './pages/AddNewSubTask';
 import SubtaskInfo from './pages/SubtaskInfo';
+import StatisticalTask from './pages/StatisticalTask';
+
 
 // ----------------------------------------------------------------------
 
@@ -46,6 +48,7 @@ export default function Router() {
         { path: 'edit-task/:id', element: <AddNewTask /> },
         { path: 'task-info/:id', element: <TaskInfo /> },
         { path: 'subtask-info/:id', element: <SubtaskInfo /> },
+        { path: 'statistical-task', element: <StatisticalTask /> },
       ],
     },
     {
