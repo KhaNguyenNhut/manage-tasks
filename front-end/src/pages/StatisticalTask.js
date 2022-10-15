@@ -80,7 +80,7 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function applySortFilter(array, comparator, query, taskTypeId) {
+function applySortFilter(array, comparator, query, taskTypeId, status) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -97,6 +97,10 @@ function applySortFilter(array, comparator, query, taskTypeId) {
     array = filter(array, (_user) => _user.topic.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
 
+  if (status) {
+    array = filter(array, (_user) => _user.status === status);
+  }
+
   return array;
 }
 
@@ -111,6 +115,7 @@ export default function StatisticalTask() {
   const [taskSelected, setTaskSelected] = useState();
   const [taskTypes, setTaskTypes] = useState([]);
   const [filterByTaskType, setFilterByTaskType] = useState('');
+  const [filterByStatus, setFilterByStatus] = useState('');
 
   const hideCheckbox = true;
 
@@ -124,6 +129,10 @@ export default function StatisticalTask() {
 
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    setPage(0);
+  }, [filterByTaskType, filterByStatus, filterTask]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -146,7 +155,13 @@ export default function StatisticalTask() {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tasks.length) : 0;
 
-  const filteredTasks = applySortFilter(tasks, getComparator(order, orderBy), filterTask, filterByTaskType);
+  const filteredTasks = applySortFilter(
+    tasks,
+    getComparator(order, orderBy),
+    filterTask,
+    filterByTaskType,
+    filterByStatus
+  );
 
   const isUserNotFound = filteredTasks.length === 0;
 
@@ -209,6 +224,18 @@ export default function StatisticalTask() {
                       {each.name}
                     </MenuItem>
                   ))}
+                </Select>
+              </FormControl>
+            </div>
+            <div className="ml-4 w-1/6">
+              <FormControl className="w-full">
+                <InputLabel>Trạng Thái</InputLabel>
+                <Select label="Trạng Thái" value={filterByStatus} onChange={(e) => setFilterByStatus(e.target.value)}>
+                  <MenuItem value="">Chọn Trạng Thái</MenuItem>
+                  <MenuItem value="Đang chờ thực hiện">Đang chờ thực hiện</MenuItem>
+                  <MenuItem value="Đang thực hiện">Đang thực hiện</MenuItem>
+                  <MenuItem value="Hoàn thành">Hoàn thành</MenuItem>
+                  <MenuItem value="Hủy bỏ">Hủy bỏ</MenuItem>
                 </Select>
               </FormControl>
             </div>
