@@ -163,7 +163,7 @@ export default function Task() {
     setTask(newTasks);
   };
   return (
-    <Page title="User">
+    <Page title="Quản lý công việc">
       {taskSelected && (
         <TaskModal
           taskSelected={taskSelected}

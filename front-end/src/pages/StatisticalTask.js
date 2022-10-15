@@ -191,7 +191,7 @@ export default function StatisticalTask() {
   };
 
   return (
-    <Page title="User">
+    <Page title="Thống kê công việc">
       {taskSelected && (
         <TaskModal
           taskSelected={taskSelected}

@@ -148,7 +148,7 @@ export default function Role() {
   };
 
   return (
-    <Page title="Role">
+    <Page title="Quản lý vai trò">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h4" gutterBottom>

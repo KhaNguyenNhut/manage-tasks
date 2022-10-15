@@ -14,7 +14,7 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
 } from '@mui/material';
 // components
 import Iconify from '../components/Iconify';
@@ -147,7 +147,7 @@ export default function TypeTask() {
   };
 
   return (
-    <Page title="Role">
+    <Page title="Quản lý loại công việc">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h4" gutterBottom>
@@ -179,7 +179,7 @@ export default function TypeTask() {
                 />
                 <TableBody>
                   {filteredRoles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    const { _id, name} = row;
+                    const { _id, name } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (

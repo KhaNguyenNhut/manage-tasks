@@ -153,7 +153,7 @@ export default function User() {
   };
 
   return (
-    <Page title="User">
+    <Page title="Quản lý người dùng">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h4" gutterBottom>
