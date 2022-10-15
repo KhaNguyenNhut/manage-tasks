@@ -5,6 +5,10 @@ import {
   Avatar,
   Card,
   Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   Table,
   TableBody,
@@ -22,6 +26,7 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead } from '../sections/@dashboard/user';
 // mock
 import taskApi from '../api/taskApi';
+import taskTypeApi from '../api/taskTypeApi';
 import TaskModal from '../components/task/TaskModal';
 import TaskListToolbar from '../sections/@dashboard/task/TaskListToolbar';
 import TaskMoreMenu from '../sections/@dashboard/task/TaskMoreMenu';
@@ -75,16 +80,26 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function applySortFilter(array, comparator, query) {
+function applySortFilter(array, comparator, query, taskTypeId) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-  if (query) {
-    return filter(array, (_user) => _user.topic.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+
+  if (taskTypeId) {
+    array = filter(array, (_user) => _user.taskType._id === taskTypeId);
   }
+
+  if (query) {
+    array = filter(array, (_user) => _user.topic.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+  }
+
+  if (taskTypeId || query) {
+    return array;
+  }
+
   return stabilizedThis.map((el) => el[0]);
 }
 
@@ -97,6 +112,8 @@ export default function StatisticalTask() {
   const [tasks, setTask] = useState([]);
   const [isOpenModal, setOpenModal] = useState(false);
   const [taskSelected, setTaskSelected] = useState();
+  const [taskTypes, setTaskTypes] = useState([]);
+  const [filterByTaskType, setFilterByTaskType] = useState('');
 
   const hideCheckbox = true;
 
@@ -104,6 +121,8 @@ export default function StatisticalTask() {
     const fetchUsers = async () => {
       const response = await taskApi.getAll();
       setTask(response);
+      const responseTaskTypes = await taskTypeApi.getTaskTypes();
+      setTaskTypes(responseTaskTypes);
     };
 
     fetchUsers();
@@ -130,9 +149,9 @@ export default function StatisticalTask() {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tasks.length) : 0;
 
-  const filteredUsers = applySortFilter(tasks, getComparator(order, orderBy), filterTask);
+  const filteredTasks = applySortFilter(tasks, getComparator(order, orderBy), filterTask, filterByTaskType);
 
-  const isUserNotFound = filteredUsers.length === 0;
+  const isUserNotFound = filteredTasks.length === 0;
 
   const handleDeleteTask = (id) => {
     const newUser = tasks.filter((each) => each._id !== id);
@@ -158,6 +177,7 @@ export default function StatisticalTask() {
     newTasks[idxTask] = task;
     setTask(newTasks);
   };
+
   return (
     <Page title="User">
       {taskSelected && (
@@ -175,10 +195,27 @@ export default function StatisticalTask() {
             Thống kê công việc
           </Typography>
         </Stack>
-
         <Card>
           <TaskListToolbar filterName={filterTask} onFilterName={handleFilterByName} />
-
+          <div className="flex justify-end px-3">
+            <div className="w-1/6">
+              <FormControl className="w-full">
+                <InputLabel>Loại Công Việc</InputLabel>
+                <Select
+                  label="Loại Công Việc"
+                  value={filterByTaskType}
+                  onChange={(e) => setFilterByTaskType(e.target.value)}
+                >
+                  <MenuItem value="">Chọn loại công việc</MenuItem>
+                  {taskTypes.map((each) => (
+                    <MenuItem key={each._id} value={each._id}>
+                      {each.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+          </div>
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -191,7 +228,7 @@ export default function StatisticalTask() {
                   hideCheckbox={hideCheckbox}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                  {filteredTasks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                     <TableRow hover key={row._id} tabIndex={-1}>
                       <TableCell align="left">{row.taskType.name}</TableCell>
                       <Tooltip title={row.topic}>
@@ -250,7 +287,7 @@ export default function StatisticalTask() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={tasks.length}
+            count={filteredTasks.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
