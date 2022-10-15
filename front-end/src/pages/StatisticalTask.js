@@ -87,6 +87,7 @@ function applySortFilter(array, comparator, query, taskTypeId) {
     if (order !== 0) return order;
     return a[1] - b[1];
   });
+  array = stabilizedThis.map((el) => el[0]);
 
   if (taskTypeId) {
     array = filter(array, (_user) => _user.taskType._id === taskTypeId);
@@ -96,11 +97,7 @@ function applySortFilter(array, comparator, query, taskTypeId) {
     array = filter(array, (_user) => _user.topic.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
 
-  if (taskTypeId || query) {
-    return array;
-  }
-
-  return stabilizedThis.map((el) => el[0]);
+  return array;
 }
 
 export default function StatisticalTask() {
