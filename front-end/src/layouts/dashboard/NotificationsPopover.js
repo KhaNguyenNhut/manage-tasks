@@ -153,7 +153,7 @@ export default function NotificationsPopover() {
             }
           >
             {readNotification.map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
+              <NotificationItem key={notification._id} notification={notification} />
             ))}
           </List>
         </Scrollbar>

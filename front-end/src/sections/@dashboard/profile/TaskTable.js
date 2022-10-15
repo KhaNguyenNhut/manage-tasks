@@ -23,16 +23,17 @@ function taskTable({ tasks }) {
           {tasks.map((row) => (
             <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell align="left">{row.taskType.name}</TableCell>
-              <TableCell align="left">
-                <div className="flex items-center">
-                  <Avatar
-                    alt={row.supervisor.fullName}
-                    src={row.supervisor.avatar ? process.env.REACT_APP_URL_IMG + row.supervisor.avatar : ''}
-                  />
-                  <span className="inline-block ml-2">{row.supervisor.fullName}</span>
-                </div>
+              <TableCell align="left" className="flex items-center">
+                <Avatar
+                  component={'span'}
+                  alt={row.supervisor.fullName}
+                  src={row.supervisor.avatar ? process.env.REACT_APP_URL_IMG + row.supervisor.avatar : ''}
+                />
+                <span className="inline-block ml-2">{row.supervisor.fullName}</span>
               </TableCell>
-              <TableCell align="left">{row.topic}</TableCell>
+              <TableCell align="left" className="truncate max-w-[140px]">
+                {row.topic}
+              </TableCell>
               <TableCell align="left" className="truncate max-w-[100px]">
                 {row.content}
               </TableCell>
