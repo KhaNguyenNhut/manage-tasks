@@ -21,7 +21,7 @@ function taskTable({ tasks }) {
         </TableHead>
         <TableBody>
           {tasks.map((row) => (
-            <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell align="left">{row.taskType.name}</TableCell>
               <TableCell align="left" className="flex items-center">
                 <Avatar
