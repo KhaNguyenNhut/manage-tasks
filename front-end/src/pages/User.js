@@ -1,12 +1,8 @@
-import { filter } from 'lodash';
-import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Avatar,
   Button,
   Card,
-  Checkbox,
   Container,
   Stack,
   Table,
@@ -17,14 +13,17 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { filter } from 'lodash';
+import { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+// mock
+import userApi from '../api/userApi';
 // components
 import Iconify from '../components/Iconify';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
-// mock
-import userApi from '../api/userApi';
 import { checkPermissionCreateAndDelete } from '../utils/checkAccess';
 
 // ----------------------------------------------------------------------
@@ -113,21 +112,6 @@ export default function User() {
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -200,10 +184,7 @@ export default function User() {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, fullName)} />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
+                        <TableCell className="pl-4" component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Avatar alt={fullName} src={avatar ? process.env.REACT_APP_URL_IMG + avatar : ''} />
                             <Typography variant="subtitle2" noWrap>

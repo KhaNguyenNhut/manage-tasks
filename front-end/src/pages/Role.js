@@ -5,7 +5,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import {
   Button,
   Card,
-  Checkbox,
   Container,
   Stack,
   Table,
@@ -26,11 +25,13 @@ import roleApi from '../api/roleApi';
 import RoleListHead from '../sections/@dashboard/role/RoleListHead';
 import RoleListToolbar from '../sections/@dashboard/role/RoleListToolbar';
 import RoleMoreMenu from '../sections/@dashboard/role/RoleMoreMenu';
+import { checkPermissionCreateAndDelete } from '../utils/checkAccess';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'stt', label: 'Số thứ tự', alignRight: false },
   { id: 'name', label: 'Vai trò', alignRight: false },
+  { id: 'access', label: 'Phân quyền', alignRight: false },
   { id: '' },
 ];
 
@@ -108,21 +109,6 @@ export default function Role() {
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -154,14 +140,16 @@ export default function Role() {
           <Typography variant="h4" gutterBottom>
             Vai Trò
           </Typography>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="/dashboard/add-new-role"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
-            Thêm vai trò
-          </Button>
+          {checkPermissionCreateAndDelete() && (
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to="/dashboard/add-new-role"
+              startIcon={<Iconify icon="eva:plus-fill" />}
+            >
+              Thêm vai trò
+            </Button>
+          )}
         </Stack>
 
         <Card>
@@ -180,7 +168,7 @@ export default function Role() {
                 />
                 <TableBody>
                   {filteredRoles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    const { _id, name } = row;
+                    const { _id, name, access } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (
@@ -192,10 +180,7 @@ export default function Role() {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
+                        <TableCell className="pl-8" component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
                               {index + 1}
@@ -203,6 +188,7 @@ export default function Role() {
                           </Stack>
                         </TableCell>
                         <TableCell align="left">{name}</TableCell>
+                        <TableCell align="left">{access}</TableCell>
                         <TableCell align="right">
                           <RoleMoreMenu id={_id} handleDeleteRole={handleDeleteRole} />
                         </TableCell>

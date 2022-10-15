@@ -1,11 +1,7 @@
-import { filter } from 'lodash';
-import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Button,
   Card,
-  Checkbox,
   Container,
   Stack,
   Table,
@@ -16,16 +12,20 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { filter } from 'lodash';
+import { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+// mock
+import taskTypeApi from '../api/taskTypeApi';
 // components
 import Iconify from '../components/Iconify';
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-// mock
-import taskTypeApi from '../api/taskTypeApi';
 import RoleListHead from '../sections/@dashboard/role/RoleListHead';
 import RoleListToolbar from '../sections/@dashboard/role/RoleListToolbar';
 import TaskTypeMoreMenu from '../sections/@dashboard/taskType/TaskTypeMoreMenu';
+import { checkPermissionCreateAndDelete } from '../utils/checkAccess';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -107,21 +107,6 @@ export default function TypeTask() {
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -153,14 +138,16 @@ export default function TypeTask() {
           <Typography variant="h4" gutterBottom>
             Loại công việc
           </Typography>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="/dashboard/add-new-typetask"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
-            Thêm loại công việc
-          </Button>
+          {checkPermissionCreateAndDelete() && (
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to="/dashboard/add-new-typetask"
+              startIcon={<Iconify icon="eva:plus-fill" />}
+            >
+              Thêm loại công việc
+            </Button>
+          )}
         </Stack>
 
         <Card>
@@ -191,10 +178,7 @@ export default function TypeTask() {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
+                        <TableCell className="pl-8" component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
                               {index + 1}

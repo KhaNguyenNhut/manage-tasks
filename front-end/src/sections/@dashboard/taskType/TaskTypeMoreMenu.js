@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 // component
 import Iconify from '../../../components/Iconify';
 import taskTypeApi from '../../../api/taskTypeApi';
+import { checkPermissionEdit, checkPermissionCreateAndDelete } from '../../../utils/checkAccess';
 
 // ----------------------------------------------------------------------
 
@@ -20,9 +21,11 @@ export default function TaskTypeMoreMenu({ id, handleDeleteRole }) {
 
   return (
     <>
-      <IconButton ref={ref} onClick={() => setIsOpen(true)}>
-        <Iconify icon="eva:more-vertical-fill" width={20} height={20} />
-      </IconButton>
+      {checkPermissionEdit() && (
+        <IconButton ref={ref} onClick={() => setIsOpen(true)}>
+          <Iconify icon="eva:more-vertical-fill" width={20} height={20} />
+        </IconButton>
+      )}
 
       <Menu
         open={isOpen}
@@ -34,7 +37,7 @@ export default function TaskTypeMoreMenu({ id, handleDeleteRole }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        {currentUser._id !== id && (
+        {currentUser._id !== id && checkPermissionCreateAndDelete() &&  (
           <MenuItem sx={{ color: 'text.secondary' }} onClick={onDeleteUser}>
             <ListItemIcon>
               <Iconify icon="eva:trash-2-outline" width={24} height={24} />
