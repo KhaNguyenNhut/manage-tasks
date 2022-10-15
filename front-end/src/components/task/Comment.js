@@ -1,6 +1,7 @@
-import { Avatar, Button, TextField } from '@mui/material';
+import { Avatar, Button, LinearProgress, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import discussionApi from '../../api/discussionApi';
 import ListComment from './ListComment';
 
@@ -9,6 +10,7 @@ function Comment({ isSubtask }) {
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const [commentValue, setCommentValue] = useState('');
   const [comments, setComments] = useState([]);
+  const { transcript, listening, browserSupportsSpeechRecognition } = useSpeechRecognition();
 
   useEffect(() => {
     const getDate = async () => {
@@ -23,6 +25,12 @@ function Comment({ isSubtask }) {
 
     getDate();
   }, [id, isSubtask]);
+
+  useEffect(() => {
+    if (transcript) {
+      setCommentValue(transcript);
+    }
+  }, [transcript]);
 
   const handleComment = async () => {
     if (commentValue) {
@@ -56,6 +64,18 @@ function Comment({ isSubtask }) {
     await discussionApi.delete(id);
   };
 
+  if (!browserSupportsSpeechRecognition) {
+    return <span>Browser doesn't support speech recognition.</span>;
+  }
+
+  const startListening = () => {
+    SpeechRecognition.startListening({ language: 'vi-VN' });
+  };
+
+  const stopListening = () => {
+    SpeechRecognition.stopListening();
+  };
+
   return (
     <div>
       <div className="flex mt-4">
@@ -64,16 +84,28 @@ function Comment({ isSubtask }) {
           src={currentUser.avatar ? process.env.REACT_APP_URL_IMG + currentUser.avatar : ''}
         />
         <div className="w-full ml-4">
-          <TextField
-            fullWidth
-            type="text"
-            label="Bình luận"
-            multiline
-            rows={4}
-            value={commentValue}
-            onKeyDown={handleKeyDown}
-            onChange={(e) => setCommentValue(e.target.value)}
-          />
+          <div className="relative">
+            <TextField
+              fullWidth
+              type="text"
+              label="Bình luận"
+              multiline
+              rows={4}
+              value={commentValue}
+              onKeyDown={handleKeyDown}
+              onChange={(e) => setCommentValue(e.target.value)}
+            />
+            {listening && <LinearProgress color="success" />}
+            <span
+              onTouchStart={() => startListening('content')}
+              onMouseDown={() => startListening('content')}
+              onTouchEnd={stopListening}
+              onMouseUp={stopListening}
+              className="absolute text-xl duration-300 cursor-pointer right-2 bottom-2 hover:text-green-500"
+            >
+              <i className="fa-solid fa-microphone" />
+            </span>
+          </div>
           <div className="flex justify-end w-full mt-2">
             <Button variant="contained" onClick={handleComment}>
               Comment

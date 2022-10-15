@@ -28,7 +28,7 @@ exports.updateUser = async (req, res) => {
     user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
-    });
+    }).populate('role');
     res.status(200).json(user);
   } catch (err) {
     res.status(400).json({ message: err });
@@ -49,4 +49,3 @@ exports.deleteUser = async (req, res) => {
     res.status(400).json({ message: err });
   }
 };
-
