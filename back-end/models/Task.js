@@ -12,7 +12,7 @@ var TaskSchema = new Schema({
   status: { type: String, default: 'Đang chờ thực hiện' },
   timeG: { type: Number, required: true },
   supervisor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  note: { type: String, required: true },
+  note: { type: String },
   progress: { type: Number, required: true },
   createdAt: { type: Date, default: new Date() },
 });
