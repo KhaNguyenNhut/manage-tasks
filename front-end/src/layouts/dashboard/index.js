@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 // material
 import { styled } from '@mui/material/styles';
 //
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+import { fetchUserById } from '../../store/slices/userSlice';
 
 // ----------------------------------------------------------------------
 
@@ -31,14 +33,24 @@ const MainStyle = styled('div')(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
+const currentUser = JSON.parse(localStorage.getItem('user'));
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
   const token = localStorage.getItem('token');
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   if (!token) {
     window.location.href = '/login';
   }
+
+  useEffect(() => {
+    if (currentUser && !user) {
+      dispatch(fetchUserById(currentUser._id));
+    }
+  }, [dispatch, user]);
+
   return (
     <RootStyle>
       {token ? (

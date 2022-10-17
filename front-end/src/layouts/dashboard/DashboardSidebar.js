@@ -4,6 +4,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { Avatar, Box, Drawer, Link, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
 // mock
 // hooks
 import useResponsive from '../../hooks/useResponsive';
@@ -42,8 +43,7 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-
-  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const { user } = useSelector((state) => state.user);
   const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {
@@ -66,17 +66,19 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
-          <AccountStyle>
-            <Avatar src={process.env.REACT_APP_URL_IMG + currentUser.avatar} alt="photoURL" />
-            <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {currentUser.fullName}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {currentUser.role.name}
-              </Typography>
-            </Box>
-          </AccountStyle>
+          {user && (
+            <AccountStyle>
+              <Avatar src={process.env.REACT_APP_URL_IMG + user.avatar} alt="photoURL" />
+              <Box sx={{ ml: 2 }}>
+                <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                  {user.fullName}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {user.role.name}
+                </Typography>
+              </Box>
+            </AccountStyle>
+          )}
         </Link>
       </Box>
 

@@ -6,14 +6,17 @@ import { DesktopDatePicker, LoadingButton, LocalizationProvider } from '@mui/lab
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { useDispatch } from 'react-redux';
 // component
 import roleApi from '../../../api/roleApi';
 import userApi from '../../../api/userApi';
 import UploadImg from '../user/UploadImg';
+import { updateUser } from '../../../store/slices/userSlice';
 
 // ----------------------------------------------------------------------
 
 export default function ProfileForm() {
+  const dispatch = useDispatch();
   const [images, setImages] = useState([]);
   const [roles, setRoles] = useState([]);
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user')));
@@ -76,6 +79,7 @@ export default function ProfileForm() {
         const response = await userApi.update(formik.values, currentUser._id);
         localStorage.setItem('user', JSON.stringify(response));
         setCurrentUser(response);
+        dispatch(updateUser(response));
       } catch ({ response }) {
         // setShowError(true);
       }

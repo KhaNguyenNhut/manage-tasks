@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import { Provider } from 'react-redux';
 // routes
 import Router from './routes';
 // theme
@@ -9,6 +10,7 @@ import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
 import './app.css';
 import SocketContext from './contexts/SocketContext';
+import { store } from './store/store';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -20,12 +22,14 @@ export default function App() {
   const value = { socket };
 
   return (
-    <SocketContext.Provider value={value}>
-      <ThemeProvider>
-        <ScrollToTop />
-        <BaseOptionChartStyle />
-        <Router />
-      </ThemeProvider>
-    </SocketContext.Provider>
+    <Provider store={store}>
+      <SocketContext.Provider value={value}>
+        <ThemeProvider>
+          <ScrollToTop />
+          <BaseOptionChartStyle />
+          <Router />
+        </ThemeProvider>
+      </SocketContext.Provider>
+    </Provider>
   );
 }
