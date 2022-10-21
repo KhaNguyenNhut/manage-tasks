@@ -1,5 +1,3 @@
-import { filter } from 'lodash';
-import { useEffect, useState } from 'react';
 // material
 import {
   Avatar,
@@ -16,20 +14,28 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { filter } from 'lodash';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+// mock
+import taskApi from '../api/taskApi';
+import taskTypeApi from '../api/taskTypeApi';
+import userApi from '../api/userApi';
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { UserListHead } from '../sections/@dashboard/user';
-// mock
-import taskApi from '../api/taskApi';
-import taskTypeApi from '../api/taskTypeApi';
+import StatisticalTable from '../components/StatisticalTable';
 import TaskModal from '../components/task/TaskModal';
 import TaskListToolbar from '../sections/@dashboard/task/TaskListToolbar';
-import TaskMoreMenu from '../sections/@dashboard/task/TaskMoreMenu';
+import { UserListHead } from '../sections/@dashboard/user';
 
 // ----------------------------------------------------------------------
 
@@ -37,9 +43,10 @@ const TABLE_HEAD = [
   { id: 'taskType', label: 'Loại Công Việc', alignRight: false },
   { id: 'topic', label: 'Chủ đề', alignRight: false },
   { id: 'user', label: 'Người Thực Hiện', alignRight: false },
-  { id: 'supervisor', label: 'Người Giám Sát', alignRight: false },
   { id: 'timeG', label: 'Giờ G', alignRight: false },
   { id: 'createdAt', label: 'Ngày Tạo', alignRight: false },
+  { id: 'startDate', label: 'Ngày Bắt Đầu', alignRight: false },
+  { id: 'endDate', label: 'Ngày Kết Thúc', alignRight: false },
   { id: 'status', label: 'Trạng Thái', alignRight: false },
   { id: '' },
 ];
@@ -80,7 +87,7 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function applySortFilter(array, comparator, query, taskTypeId, status) {
+function applySortFilter(array, comparator, query, taskTypeId, status, user, startDate, endDate) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -100,6 +107,22 @@ function applySortFilter(array, comparator, query, taskTypeId, status) {
   if (status) {
     array = filter(array, (_user) => _user.status === status);
   }
+  if (user) {
+    array = filter(array, (_user) => _user.user._id === user);
+  }
+
+  try {
+    if (startDate) {
+      const data = filter(array, (_user) => _user.startDate >= startDate.toISOString());
+      array = data && data.length >= 0 ? data : array;
+    }
+    if (endDate) {
+      const data = filter(array, (_user) => _user.endDate <= endDate.toISOString());
+      array = data && data.length >= 0 ? data : array;
+    }
+  } catch (eror) {
+    // Do nothing
+  }
 
   return array;
 }
@@ -114,8 +137,12 @@ export default function StatisticalTask() {
   const [isOpenModal, setOpenModal] = useState(false);
   const [taskSelected, setTaskSelected] = useState();
   const [taskTypes, setTaskTypes] = useState([]);
+  const [userList, setUserList] = useState([]);
   const [filterByTaskType, setFilterByTaskType] = useState('');
   const [filterByStatus, setFilterByStatus] = useState('');
+  const [filterByUser, setFilterByUser] = useState('');
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
 
   const hideCheckbox = true;
 
@@ -125,6 +152,8 @@ export default function StatisticalTask() {
       setTask(response);
       const responseTaskTypes = await taskTypeApi.getTaskTypes();
       setTaskTypes(responseTaskTypes);
+      const responseUser = await userApi.getAll();
+      setUserList(responseUser);
     };
 
     fetchUsers();
@@ -132,7 +161,7 @@ export default function StatisticalTask() {
 
   useEffect(() => {
     setPage(0);
-  }, [filterByTaskType, filterByStatus, filterTask]);
+  }, [filterByTaskType, filterByStatus, filterTask, filterByUser]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -160,27 +189,19 @@ export default function StatisticalTask() {
     getComparator(order, orderBy),
     filterTask,
     filterByTaskType,
-    filterByStatus
+    filterByStatus,
+    filterByUser,
+    startDate,
+    endDate
   );
 
   const isUserNotFound = filteredTasks.length === 0;
-
-  const handleDeleteTask = (id) => {
-    const newUser = tasks.filter((each) => each._id !== id);
-    setTask(newUser);
-  };
 
   const handleClickTaskModal = () => {
     if (isOpenModal) {
       setTaskSelected();
     }
     setOpenModal(!isOpenModal);
-  };
-
-  const handleOpenTaskModal = (id) => {
-    const task = tasks.find((each) => each._id === id);
-    setTaskSelected(task);
-    handleClickTaskModal();
   };
 
   const handleUpdateState = (task) => {
@@ -209,7 +230,7 @@ export default function StatisticalTask() {
         </Stack>
         <Card>
           <TaskListToolbar filterName={filterTask} onFilterName={handleFilterByName} />
-          <div className="flex justify-end px-3">
+          <div className="flex justify-between px-3">
             <div className="w-1/6">
               <FormControl className="w-full">
                 <InputLabel>Loại Công Việc</InputLabel>
@@ -239,7 +260,56 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
+            <div className="ml-4 w-1/6">
+              <FormControl className="w-full">
+                <InputLabel>Người thực hiện</InputLabel>
+                <Select
+                  className="flex justify-end px-3 w-full"
+                  label="Người thực hiện"
+                  value={filterByUser}
+                  onChange={(e) => setFilterByUser(e.target.value)}
+                >
+                  <MenuItem value="">Chọn người thực hiện</MenuItem>
+                  {userList.map((each) => (
+                    <MenuItem className="h-14" key={each._id} value={each._id}>
+                      <div className="flex items-center">
+                        <Avatar
+                          alt={each.fullName}
+                          src={each.avatar ? process.env.REACT_APP_URL_IMG + each.avatar : ''}
+                        />
+                        <span className="ml-2">{each.fullName}</span>
+                      </div>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <div className="ml-4 w-1/6">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  label="Ngày bắt đầu"
+                  value={startDate}
+                  onChange={(newValue) => {
+                    setStartDate(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </div>
+            <div className="ml-4 w-1/6">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  label="Ngày kết thúc"
+                  value={endDate}
+                  onChange={(newValue) => {
+                    setEndDate(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </div>
           </div>
+
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -267,24 +337,15 @@ export default function StatisticalTask() {
                           <span className="inline-block ml-2">{row.user.fullName}</span>
                         </div>
                       </TableCell>
-                      <TableCell align="left">
-                        <div className="flex items-center">
-                          <Avatar
-                            alt={row.supervisor.fullName}
-                            src={row.supervisor.avatar ? process.env.REACT_APP_URL_IMG + row.supervisor.avatar : ''}
-                          />
-                          <span className="inline-block ml-2">{row.supervisor.fullName}</span>
-                        </div>
-                      </TableCell>
                       <TableCell align="left">{row.timeG}</TableCell>
                       <TableCell align="left">{row.createdAt.slice(0, 10)}</TableCell>
+                      <TableCell align="left">{row.startDate.slice(0, 10)}</TableCell>
+                      <TableCell align="left">{row.endDate.slice(0, 10)}</TableCell>
                       <TableCell align="left">{row.status}</TableCell>
                       <TableCell align="right">
-                        <TaskMoreMenu
-                          id={row._id}
-                          handleDeleteTask={handleDeleteTask}
-                          handleOpenTaskModal={handleOpenTaskModal}
-                        />
+                        <Link className="text-black" to={`/dashboard/task-info/${row._id}`}>
+                          <i className="fa-solid fa-circle-info" />
+                        </Link>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -317,6 +378,7 @@ export default function StatisticalTask() {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
+          <StatisticalTable users={userList} tasks={filteredTasks} />
         </Card>
       </Container>
     </Page>

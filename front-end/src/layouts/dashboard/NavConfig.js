@@ -34,7 +34,7 @@ const navConfig = [
   {
     title: 'Thống kê công việc',
     path: '/dashboard/statistical-task',
-    icon: getIcon('eva:file-text-fill'),
+    icon: getIcon('eva:bar-chart-fill'),
   },
 ];
 
