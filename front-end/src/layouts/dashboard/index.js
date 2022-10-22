@@ -8,6 +8,7 @@ import { Fade, Snackbar } from '@mui/material';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
 import { fetchUserById } from '../../store/slices/userSlice';
+import { closeNotification } from '../../store/slices/NotificationSlice';
 
 // ----------------------------------------------------------------------
 
@@ -53,6 +54,9 @@ export default function DashboardLayout() {
     }
   }, [dispatch, user]);
 
+  const handleCloseNotification = () => {
+    dispatch(closeNotification());
+  };
   return (
     <RootStyle>
       <Snackbar
@@ -60,6 +64,7 @@ export default function DashboardLayout() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         open={isOpen}
         message={message}
+        onClick={handleCloseNotification}
       />
       {token ? (
         <>

@@ -13,7 +13,7 @@ export const notificationSlice = createSlice({
       state.isOpen = true;
       state.message = action.payload;
     },
-    closeNotification: (state, action) => {
+    closeNotification: (state) => {
       state.isOpen = false;
       state.message = '';
     },
