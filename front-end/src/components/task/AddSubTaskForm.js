@@ -303,6 +303,7 @@ export default function AddSubTaskForm({ task, subtask }) {
                       inputFormat="MM/DD/YYYY"
                       value={startDate}
                       onChange={handleChangeStartDate}
+                      maxDate={formik.values.endDate}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </Stack>
@@ -316,6 +317,7 @@ export default function AddSubTaskForm({ task, subtask }) {
                       inputFormat="MM/DD/YYYY"
                       value={endDate}
                       onChange={handleChangeEndDate}
+                      minDate={formik.values.startDate}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </Stack>

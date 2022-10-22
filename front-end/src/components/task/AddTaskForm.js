@@ -24,6 +24,7 @@ import taskApi from '../../api/taskApi';
 import taskTypeApi from '../../api/taskTypeApi';
 import userApi from '../../api/userApi';
 import SocketContext from '../../contexts/SocketContext';
+import { onOpenNotification } from '../../utils/notificationService';
 
 // ----------------------------------------------------------------------
 
@@ -75,9 +76,11 @@ export default function AddTaskForm({ task }) {
         if (!isEditTask) {
           const response = await taskApi.add(formik.values);
           socket.emit('send_notification', response);
+          onOpenNotification('Thêm công việc mới  thành công !');
         } else {
           const response = await taskApi.update(formik.values, task._id);
           socket.emit('send_notification', response);
+          onOpenNotification('Cập nhật công việc thành công !');
         }
         navigate('/dashboard/task', { replace: true });
       } catch ({ response }) {
@@ -290,6 +293,7 @@ export default function AddTaskForm({ task }) {
                       inputFormat="MM/DD/YYYY"
                       value={startDate}
                       onChange={handleChangeStartDate}
+                      maxDate={formik.values.endDate}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </Stack>
@@ -302,6 +306,7 @@ export default function AddTaskForm({ task }) {
                       label="Ngày Kết Thúc"
                       inputFormat="MM/DD/YYYY"
                       value={endDate}
+                      minDate={formik.values.startDate}
                       onChange={handleChangeEndDate}
                       renderInput={(params) => <TextField {...params} />}
                     />

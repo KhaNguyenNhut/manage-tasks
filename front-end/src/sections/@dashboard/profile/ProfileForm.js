@@ -10,8 +10,9 @@ import { useDispatch } from 'react-redux';
 // component
 import roleApi from '../../../api/roleApi';
 import userApi from '../../../api/userApi';
-import UploadImg from '../user/UploadImg';
 import { updateUser } from '../../../store/slices/userSlice';
+import { onOpenNotification } from '../../../utils/notificationService';
+import UploadImg from '../user/UploadImg';
 
 // ----------------------------------------------------------------------
 
@@ -80,6 +81,7 @@ export default function ProfileForm() {
         localStorage.setItem('user', JSON.stringify(response));
         setCurrentUser(response);
         dispatch(updateUser(response));
+        onOpenNotification('Cập nhật thông tin thành công !');
       } catch ({ response }) {
         // setShowError(true);
       }

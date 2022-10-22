@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 // material
 import { styled } from '@mui/material/styles';
+import { Fade, Snackbar } from '@mui/material';
 //
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
@@ -40,6 +41,7 @@ export default function DashboardLayout() {
   const token = localStorage.getItem('token');
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const { isOpen, message } = useSelector((state) => state.notification) || {};
 
   if (!token) {
     window.location.href = '/login';
@@ -53,6 +55,12 @@ export default function DashboardLayout() {
 
   return (
     <RootStyle>
+      <Snackbar
+        TransitionComponent={Fade}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        open={isOpen}
+        message={message}
+      />
       {token ? (
         <>
           <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
