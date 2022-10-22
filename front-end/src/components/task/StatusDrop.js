@@ -3,14 +3,16 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { checkPermissionCreateAndDelete } from '../../utils/checkAccess';
 
-export default function StatusDrop({ status, onUpdateTaskStatus }) {
+export default function StatusDrop({ status, onUpdateTaskStatus, task }) {
   const [anchorEl, setAnchorEl] = useState();
   const [statusSelected, setStatusSelected] = useState(status);
   const open = Boolean(anchorEl);
-
+  const { user } = useSelector((state) => state.user);
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    if (task.user._id === user._id || checkPermissionCreateAndDelete()) setAnchorEl(event.currentTarget);
   };
 
   const handleClose = (taskStatus) => {

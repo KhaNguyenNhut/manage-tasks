@@ -17,7 +17,6 @@ function SubTaskInfo() {
     const getInfo = async () => {
       const responseSubtasks = await subtaskApi.getByID(id);
       setSubTask(responseSubtasks);
-      console.log(responseSubtasks);
     };
     getInfo();
   }, [id]);
@@ -51,7 +50,7 @@ function SubTaskInfo() {
             </div>
             <p className="mb-8 text-2xl font-bold text-center">THÔNG TIN NHIỆM VỤ</p>
             <div className="flex">
-              <div className="w-8/12 pr-2 mr-2">
+              <div className="w-7/12 pr-2 mr-2">
                 <Typography id="modal-modal-title" variant="h6" component="h2" className="text-2xl">
                   {subtask.topic}
                 </Typography>
@@ -68,13 +67,13 @@ function SubTaskInfo() {
                 <Comment isSubtask={isSubtask} />
               </div>
 
-              <div className="w-4/12">
+              <div className="w-5/12">
                 <div className="w-full p-4 ml-2 bg-white shadow-2xl rounded-xl">
                   <div className="flex items-center justify-between mb-6">
                     <Typography id="modal-modal-title" variant="h6" component="h2">
                       Chi Tiết
                     </Typography>
-                    <StatusDrop status={subtask.status} onUpdateTaskStatus={onUpdateTask} />
+                    <StatusDrop status={subtask.status} onUpdateTaskStatus={onUpdateTask} task={subtask} />
                   </div>
 
                   <div className="flex items-center">

@@ -45,7 +45,7 @@ function TaskInfo() {
           <div className="p-8 bg-white shadow-xl rounded-2xl">
             <p className="mb-8 text-2xl font-bold text-center">THÔNG TIN CÔNG VIỆC</p>
             <div className="flex">
-              <div className="w-8/12 pr-2 mr-2">
+              <div className="w-7/12 pr-2 mr-2">
                 <Typography id="modal-modal-title" variant="h6" component="h2" className="text-2xl">
                   {task.topic}
                 </Typography>
@@ -100,13 +100,13 @@ function TaskInfo() {
                 <Comment isSubtask={isSubtask} />
               </div>
 
-              <div className="w-4/12">
+              <div className="w-5/12">
                 <div className="w-full p-4 ml-2 bg-white shadow-2xl rounded-xl">
                   <div className="flex items-center justify-between mb-6">
                     <Typography id="modal-modal-title" variant="h6" component="h2">
                       Chi Tiết
                     </Typography>
-                    <StatusDrop status={task.status} onUpdateTaskStatus={onUpdateTask} />
+                    <StatusDrop status={task.status} onUpdateTaskStatus={onUpdateTask} task={task} />
                   </div>
 
                   <div className="flex items-center">

@@ -79,3 +79,22 @@ exports.getAccount = async (req, res) => {
 
   return res.status(200).json(user);
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword, id } = req.body;
+    // Hash passwords
+    const salt = await bcrypt.genSalt(10);
+    const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+    const user = await User.findById(id);
+    if (!(await bcrypt.compare(currentPassword, user.password))) {
+      res.status(401).json({ message: 'Mật khẩu cũ không đúng!' });
+    }
+    user.password = hashedNewPassword;
+    await user.save();
+    res.status(200).json({ message: 'Success' });
+  } catch (err) {
+    res.status(400).json({ message: err });
+  }
+};

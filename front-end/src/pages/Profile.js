@@ -5,6 +5,7 @@ import userApi from '../api/userApi';
 import Page from '../components/Page';
 import ProfileForm from '../sections/@dashboard/profile/ProfileForm';
 import MyTask from '../sections/@dashboard/profile/MyTask';
+import ChangePassword from '../sections/@dashboard/profile/ChangePassword';
 
 function Profile() {
   const { id } = useParams();
@@ -34,6 +35,10 @@ function Profile() {
         </Stack>
         {!isEditUser || (isEditUser && user) ? <ProfileForm user={user} /> : <p>Loading...</p>}
 
+        <Typography variant="h4" gutterBottom className="my-8">
+          Đổi mật khẩu
+        </Typography>
+        <ChangePassword />
         <Typography variant="h4" gutterBottom className="my-8">
           Danh Sách Công việc
         </Typography>

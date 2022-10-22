@@ -44,6 +44,7 @@ export default function AddSubTaskForm({ task, subtask }) {
   const { transcript, listening, browserSupportsSpeechRecognition } = useSpeechRecognition();
   const [fieldRecord, setFieldRecord] = useState('');
   const { socket } = useContext(SocketContext);
+  const currentDate = dayjs(new Date());
 
   const LoginSchema = Yup.object().shape({
     taskType: Yup.string().required('Loại công việc không thể để trống!'),
@@ -117,6 +118,9 @@ export default function AddSubTaskForm({ task, subtask }) {
   const handleChangeStartDate = (date) => {
     setStartDate(date);
     setFieldValue('startDate', date);
+
+    setEndDate(date);
+    setFieldValue('endDate', date);
   };
 
   const handleChangeEndDate = (date) => {
@@ -303,7 +307,7 @@ export default function AddSubTaskForm({ task, subtask }) {
                       inputFormat="MM/DD/YYYY"
                       value={startDate}
                       onChange={handleChangeStartDate}
-                      maxDate={formik.values.endDate}
+                      minDate={currentDate}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </Stack>

@@ -248,7 +248,7 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
-            <div className="ml-4 w-1/6">
+            <div className="w-1/6 ml-4">
               <FormControl className="w-full">
                 <InputLabel>Trạng Thái</InputLabel>
                 <Select label="Trạng Thái" value={filterByStatus} onChange={(e) => setFilterByStatus(e.target.value)}>
@@ -260,11 +260,11 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
-            <div className="ml-4 w-1/6">
+            <div className="w-1/6 ml-4">
               <FormControl className="w-full">
                 <InputLabel>Người thực hiện</InputLabel>
                 <Select
-                  className="flex justify-end px-3 w-full"
+                  className="flex justify-end w-full px-3"
                   label="Người thực hiện"
                   value={filterByUser}
                   onChange={(e) => setFilterByUser(e.target.value)}
@@ -284,7 +284,7 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
-            <div className="ml-4 w-1/6">
+            <div className="w-1/6 ml-4">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   label="Ngày bắt đầu"
@@ -296,7 +296,7 @@ export default function StatisticalTask() {
                 />
               </LocalizationProvider>
             </div>
-            <div className="ml-4 w-1/6">
+            <div className="w-1/6 ml-4">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   label="Ngày kết thúc"

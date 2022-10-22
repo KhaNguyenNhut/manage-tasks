@@ -1,14 +1,13 @@
 import { Form, FormikProvider, useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 // material
 import { DesktopDatePicker, LoadingButton, LocalizationProvider } from '@mui/lab';
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
+import { Stack, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { useDispatch } from 'react-redux';
 // component
-import roleApi from '../../../api/roleApi';
 import userApi from '../../../api/userApi';
 import { updateUser } from '../../../store/slices/userSlice';
 import { onOpenNotification } from '../../../utils/notificationService';
@@ -19,24 +18,10 @@ import UploadImg from '../user/UploadImg';
 export default function ProfileForm() {
   const dispatch = useDispatch();
   const [images, setImages] = useState([]);
-  const [roles, setRoles] = useState([]);
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user')));
   const [birthday, setBirthday] = useState(
     dayjs(currentUser && currentUser.birthday ? currentUser.birthday : '2000-08-18')
   );
-
-  useEffect(() => {
-    getRoles();
-  }, []);
-
-  const getRoles = async () => {
-    try {
-      const response = await roleApi.getRoles();
-      setRoles(response);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const handleChange = (newBirthday) => {
     setBirthday(newBirthday);
@@ -168,21 +153,6 @@ export default function ProfileForm() {
                       />
                     </Stack>
                   </LocalizationProvider>
-                </div>
-                <div className="w-1/2 pl-2">
-                  {roles.length > 0 && (
-                    <FormControl className="w-full" error={Boolean(touched.role && errors.role)}>
-                      <InputLabel>Role</InputLabel>
-                      <Select label="Role" {...getFieldProps('role')} error={Boolean(touched.role && errors.role)}>
-                        {roles.map((each) => (
-                          <MenuItem key={each.id} value={each.id}>
-                            {each.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {Boolean(touched.role && errors.role) && <FormHelperText>Vui lòng chọn vai trò !</FormHelperText>}
-                    </FormControl>
-                  )}
                 </div>
               </div>
               <div className="flex items-center justify-center mt-8">
