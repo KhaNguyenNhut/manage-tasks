@@ -35,6 +35,19 @@ const TABLE_HEAD = [
   { id: '' },
 ];
 
+const getAccessLabel = (access) => {
+  switch (access) {
+    case 'Full-Access':
+      return 'Toàn quyền';
+    case 'Edit':
+      return 'Chỉnh sửa';
+    case 'Read-Only':
+      return 'Chỉ xem';
+    default:
+      return '';
+  }
+};
+
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
@@ -188,7 +201,7 @@ export default function Role() {
                           </Stack>
                         </TableCell>
                         <TableCell align="left">{name}</TableCell>
-                        <TableCell align="left">{access}</TableCell>
+                        <TableCell align="left">{getAccessLabel(access)}</TableCell>
                         <TableCell align="right">
                           <RoleMoreMenu id={_id} handleDeleteRole={handleDeleteRole} />
                         </TableCell>
