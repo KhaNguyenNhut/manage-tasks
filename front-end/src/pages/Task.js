@@ -38,6 +38,7 @@ const TABLE_HEAD = [
   { id: 'user', label: 'Người Thực Hiện', alignRight: false },
   { id: 'timeG', label: 'Giờ G', alignRight: false },
   { id: 'status', label: 'Trạng Thái', alignRight: false },
+  { id: 'link', label: 'Liên kết', alignRight: false },
   { id: '' },
 ];
 
@@ -220,6 +221,15 @@ export default function Task() {
                       </TableCell>
                       <TableCell align="left">{row.timeG}</TableCell>
                       <TableCell align="left">{row.status}</TableCell>
+                      <TableCell align="left">
+                        <a
+                          href={/^http/.test(row.link) ? row.link : `https://${row.link}`}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          {row.link}
+                        </a>
+                      </TableCell>
                       <TableCell align="right">
                         <TaskMoreMenu
                           id={row._id}
