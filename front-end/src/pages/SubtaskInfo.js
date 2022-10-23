@@ -62,6 +62,18 @@ function SubTaskInfo() {
                   <p>{subtask.content}</p>
                   <p className="mt-8 font-semibold">Ghi chú</p>
                   <p>{subtask.note}</p>
+                  {subtask.link && (
+                    <>
+                      <p className="mt-8 font-semibold">Liên kết</p>
+                      <a
+                        href={/^http/.test(subtask.link) ? subtask.link : `https://${subtask.link}`}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        {subtask.link}
+                      </a>
+                    </>
+                  )}
                 </Typography>
                 <p className="mt-8 font-semibold">Hoạt động</p>
                 <Comment isSubtask={isSubtask} />

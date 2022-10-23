@@ -36,9 +36,7 @@ const TABLE_HEAD = [
   { id: 'taskType', label: 'Loại Công Việc', alignRight: false },
   { id: 'topic', label: 'Chủ đề', alignRight: false },
   { id: 'user', label: 'Người Thực Hiện', alignRight: false },
-  { id: 'supervisor', label: 'Người Giám Sát', alignRight: false },
   { id: 'timeG', label: 'Giờ G', alignRight: false },
-  { id: 'createdAt', label: 'Ngày Tạo', alignRight: false },
   { id: 'status', label: 'Trạng Thái', alignRight: false },
   { id: '' },
 ];
@@ -220,17 +218,7 @@ export default function Task() {
                           <span className="inline-block ml-2">{row.user.fullName}</span>
                         </div>
                       </TableCell>
-                      <TableCell align="left">
-                        <div className="flex items-center">
-                          <Avatar
-                            alt={row.supervisor.fullName}
-                            src={row.supervisor.avatar ? process.env.REACT_APP_URL_IMG + row.supervisor.avatar : ''}
-                          />
-                          <span className="inline-block ml-2">{row.supervisor.fullName}</span>
-                        </div>
-                      </TableCell>
                       <TableCell align="left">{row.timeG}</TableCell>
-                      <TableCell align="left">{row.createdAt.slice(0, 10)}</TableCell>
                       <TableCell align="left">{row.status}</TableCell>
                       <TableCell align="right">
                         <TaskMoreMenu

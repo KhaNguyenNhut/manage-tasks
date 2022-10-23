@@ -230,7 +230,7 @@ export default function StatisticalTask() {
         </Stack>
         <Card>
           <TaskListToolbar filterName={filterTask} onFilterName={handleFilterByName} />
-          <div className="flex justify-between px-3">
+          <div className="flex justify-between px-3 mb-6">
             <div className="w-1/6">
               <FormControl className="w-full">
                 <InputLabel>Loại Công Việc</InputLabel>

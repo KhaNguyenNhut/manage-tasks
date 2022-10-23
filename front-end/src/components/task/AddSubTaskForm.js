@@ -69,6 +69,7 @@ export default function AddSubTaskForm({ task, subtask }) {
       timeG: isEditTask ? subtask.timeG : '',
       supervisor: isEditTask && subtask.supervisor ? subtask.supervisor._id : '',
       note: isEditTask && subtask.note ? subtask.note : '',
+      link: isEditTask && subtask.link ? subtask.link : '',
       progress: isEditTask && subtask.progress ? subtask.progress : 0,
     },
     validationSchema: LoginSchema,
@@ -307,7 +308,7 @@ export default function AddSubTaskForm({ task, subtask }) {
                       inputFormat="MM/DD/YYYY"
                       value={startDate}
                       onChange={handleChangeStartDate}
-                      minDate={currentDate}
+                      minDate={isEditTask ? dayjs(subtask.startDate) : currentDate}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </Stack>
@@ -327,6 +328,16 @@ export default function AddSubTaskForm({ task, subtask }) {
                   </Stack>
                 </LocalizationProvider>
               </div>
+            </div>
+            <div className="mt-8">
+              <TextField
+                fullWidth
+                type="text"
+                label="Liên Kết"
+                {...getFieldProps('link')}
+                error={Boolean(touched.link && errors.link)}
+                helperText={touched.link && errors.link}
+              />
             </div>
             <div className="flex items-center justify-center mt-8">
               <LoadingButton size="large" type="submit" variant="contained" loading={isSubmitting} className="px-20">

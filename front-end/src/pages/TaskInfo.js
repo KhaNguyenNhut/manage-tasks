@@ -68,6 +68,18 @@ function TaskInfo() {
                   <p>{task.content}</p>
                   <p className="mt-8 font-semibold">Ghi chú</p>
                   <p>{task.note}</p>
+                  {task.link && (
+                    <>
+                      <p className="mt-8 font-semibold">Liên kết</p>
+                      <a
+                        href={/^http/.test(task.link) ? task.link : `https://${task.link}`}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        {task.link}
+                      </a>
+                    </>
+                  )}
                 </Typography>
                 {subtasks.length > 0 && (
                   <div>

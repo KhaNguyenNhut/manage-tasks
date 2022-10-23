@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
         .json({ message: 'Username or Password is required !' });
     }
     const user = await User.findOne({ username: username }).populate('role');
-    if (!user) {
+    if (!user || user.isDeleted) {
       return res
         .status(404)
         .json({ message: 'Username or Password is wrong !' });
@@ -88,13 +88,16 @@ exports.changePassword = async (req, res) => {
     const hashedNewPassword = await bcrypt.hash(newPassword, salt);
 
     const user = await User.findById(id);
-    if (!(await bcrypt.compare(currentPassword, user.password))) {
+    var isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
       res.status(401).json({ message: 'Mật khẩu cũ không đúng!' });
     }
-    user.password = hashedNewPassword;
-    await user.save();
-    res.status(200).json({ message: 'Success' });
+    if (isValid) {
+      user.password = hashedNewPassword;
+      await user.save();
+      res.status(200).json({ message: 'Success' });
+    }
   } catch (err) {
-    res.status(400).json({ message: err });
+    //Do nothing
   }
 };

@@ -68,6 +68,7 @@ export default function AddTaskForm({ task }) {
       timeG: isEditTask ? task.timeG : '',
       supervisor: isEditTask && task.supervisor ? task.supervisor._id : '',
       note: isEditTask && task.note ? task.note : '',
+      link: isEditTask && task.link ? task.link : '',
       progress: isEditTask && task.progress ? task.progress : 0,
     },
     validationSchema: LoginSchema,
@@ -294,7 +295,7 @@ export default function AddTaskForm({ task }) {
                     <DesktopDatePicker
                       label="Ngày Bắt Đầu"
                       inputFormat="MM/DD/YYYY"
-                      value={startDate}
+                      value={isEditTask ? dayjs(task.startDate) : startDate}
                       onChange={handleChangeStartDate}
                       minDate={currentDate}
                       renderInput={(params) => <TextField {...params} />}
@@ -316,6 +317,16 @@ export default function AddTaskForm({ task }) {
                   </Stack>
                 </LocalizationProvider>
               </div>
+            </div>
+            <div className="mt-8">
+              <TextField
+                fullWidth
+                type="text"
+                label="Liên Kết"
+                {...getFieldProps('link')}
+                error={Boolean(touched.link && errors.link)}
+                helperText={touched.link && errors.link}
+              />
             </div>
             <div className="flex items-center justify-center mt-8">
               <LoadingButton size="large" type="submit" variant="contained" loading={isSubmitting} className="px-20">

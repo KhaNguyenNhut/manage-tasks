@@ -13,6 +13,7 @@ var TaskSchema = new Schema({
   timeG: { type: Number, required: true },
   supervisor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   note: { type: String },
+  link: { type: String },
   progress: { type: Number, required: true },
   createdAt: { type: Date, default: new Date() },
 });

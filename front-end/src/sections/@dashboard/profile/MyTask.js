@@ -45,6 +45,7 @@ export default function MyTask() {
   const [value, setValue] = React.useState(0);
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const [tasks, setTasks] = useState([]);
+  const currentDate = new Date();
 
   useEffect(() => {
     const getData = async () => {
@@ -58,6 +59,10 @@ export default function MyTask() {
   const todoTask = tasks.filter((each) => each.status === 'Đang chờ thực hiện');
   const inprogressTask = tasks.filter((each) => each.status === 'Đang thực hiện');
   const completedTask = tasks.filter((each) => each.status === 'Hoàn thành');
+  const laterTask = tasks.filter(
+    (each) =>
+      (each.status === 'Đang chờ thực hiện' || each.status === 'Đang thực hiện') && new Date(each.endDate) < currentDate
+  );
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -70,6 +75,7 @@ export default function MyTask() {
           <Tab label="Đang chờ thực hiện" {...a11yProps(0)} />
           <Tab label="Đang thực hiện" {...a11yProps(1)} />
           <Tab label="Hoàn Thành" {...a11yProps(2)} />
+          <Tab label="Trễ Hạn" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -80,6 +86,9 @@ export default function MyTask() {
       </TabPanel>
       <TabPanel value={value} index={2}>
         <TaskTable tasks={completedTask} />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <TaskTable tasks={laterTask} />
       </TabPanel>
     </Box>
   );

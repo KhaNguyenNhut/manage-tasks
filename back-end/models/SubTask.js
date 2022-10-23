@@ -13,7 +13,8 @@ var SubTaskSchema = new Schema({
   endDate: { type: Date, required: true },
   status: { type: String, default: 'Đang chờ thực hiện' },
   timeG: { type: Number },
-  note: { type: String, required: true },
+  note: { type: String },
+  link: { type: String },
   progress: { type: Number, required: true },
   createdAt: { type: Date, default: new Date() },
 });
