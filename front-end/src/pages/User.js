@@ -29,6 +29,7 @@ import { checkPermissionCreateAndDelete } from '../utils/checkAccess';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: 'stt', label: 'Số thứ tự', alignRight: true },
   { id: 'fullName', label: 'Họ và Tên', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
   { id: 'role', label: 'Vai Trò', alignRight: false },
@@ -171,7 +172,7 @@ export default function User() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                     const { _id, fullName, role, birthday, email, avatar, officerCode, phoneNumber } = row;
                     const isItemSelected = selected.indexOf(fullName) !== -1;
 
@@ -184,6 +185,7 @@ export default function User() {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
+                        <TableCell align="center">{index + 1}</TableCell>
                         <TableCell className="pl-4" component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Avatar alt={fullName} src={avatar ? process.env.REACT_APP_URL_IMG + avatar : ''} />

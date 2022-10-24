@@ -40,14 +40,15 @@ import { UserListHead } from '../sections/@dashboard/user';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: 'stt', label: 'Số thứ tự', alignRight: true },
   { id: 'taskType', label: 'Loại Công Việc', alignRight: false },
   { id: 'topic', label: 'Chủ đề', alignRight: false },
   { id: 'user', label: 'Người Thực Hiện', alignRight: false },
   { id: 'timeG', label: 'Giờ G', alignRight: false },
-  { id: 'createdAt', label: 'Ngày Tạo', alignRight: false },
   { id: 'startDate', label: 'Ngày Bắt Đầu', alignRight: false },
   { id: 'endDate', label: 'Ngày Kết Thúc', alignRight: false },
   { id: 'status', label: 'Trạng Thái', alignRight: false },
+  { id: 'late', label: 'Trễ hạn', alignRight: false },
   { id: '' },
 ];
 
@@ -211,6 +212,24 @@ export default function StatisticalTask() {
     setTask(newTasks);
   };
 
+  const lateTask = (endDate) => {
+    const d = new Date();
+    const day = d.getDate();
+    const month = d.getMonth() + 1;
+    // const dayEnd = endDate.slice(8, 10);
+    const monthOfTask = endDate.slice(5, 7);
+    const dayOfTask = endDate.slice(8, 10);
+    if (parseInt(monthOfTask, 10) === month) {
+      if (parseInt(dayOfTask, 10) - day > 1 && parseInt(dayOfTask, 10) - day <= 3) {
+        return <p className="text-orange-600">Sắp trễ hạn</p>;
+      }
+      if (parseInt(dayOfTask, 10) - day <= 1) {
+        return <p className="text-red-600">Trễ hạn</p>;
+      }
+      return <p className="text-green-600">Chưa đến hạn</p>;
+    }
+  };
+
   return (
     <Page title="Thống kê công việc">
       {taskSelected && (
@@ -230,7 +249,7 @@ export default function StatisticalTask() {
         </Stack>
         <Card>
           <TaskListToolbar filterName={filterTask} onFilterName={handleFilterByName} />
-          <div className="flex justify-between px-3 mb-6">
+          <div className="flex justify-between px-3">
             <div className="w-1/6">
               <FormControl className="w-full">
                 <InputLabel>Loại Công Việc</InputLabel>
@@ -248,7 +267,7 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
-            <div className="w-1/6 ml-4">
+            <div className="ml-4 w-1/6">
               <FormControl className="w-full">
                 <InputLabel>Trạng Thái</InputLabel>
                 <Select label="Trạng Thái" value={filterByStatus} onChange={(e) => setFilterByStatus(e.target.value)}>
@@ -260,11 +279,11 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
-            <div className="w-1/6 ml-4">
+            <div className="ml-4 w-1/6">
               <FormControl className="w-full">
                 <InputLabel>Người thực hiện</InputLabel>
                 <Select
-                  className="flex justify-end w-full px-3"
+                  className="flex justify-end px-3 w-full"
                   label="Người thực hiện"
                   value={filterByUser}
                   onChange={(e) => setFilterByUser(e.target.value)}
@@ -284,7 +303,7 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
-            <div className="w-1/6 ml-4">
+            <div className="ml-4 w-1/6">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   label="Ngày bắt đầu"
@@ -296,7 +315,7 @@ export default function StatisticalTask() {
                 />
               </LocalizationProvider>
             </div>
-            <div className="w-1/6 ml-4">
+            <div className="ml-4 w-1/6">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   label="Ngày kết thúc"
@@ -312,7 +331,7 @@ export default function StatisticalTask() {
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
+              <Table className="mt-4">
                 <UserListHead
                   order={order}
                   orderBy={orderBy}
@@ -322,8 +341,9 @@ export default function StatisticalTask() {
                   hideCheckbox={hideCheckbox}
                 />
                 <TableBody>
-                  {filteredTasks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                  {filteredTasks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                     <TableRow hover key={row._id} tabIndex={-1}>
+                      <TableCell align="center">{index + 1}</TableCell>
                       <TableCell align="left">{row.taskType.name}</TableCell>
                       <Tooltip title={row.topic}>
                         <TableCell align="left truncate max-w-[100px]">{row.topic}</TableCell>
@@ -338,10 +358,11 @@ export default function StatisticalTask() {
                         </div>
                       </TableCell>
                       <TableCell align="left">{row.timeG}</TableCell>
-                      <TableCell align="left">{row.createdAt.slice(0, 10)}</TableCell>
                       <TableCell align="left">{row.startDate.slice(0, 10)}</TableCell>
                       <TableCell align="left">{row.endDate.slice(0, 10)}</TableCell>
                       <TableCell align="left">{row.status}</TableCell>
+
+                      <TableCell align="center">{lateTask(row.endDate)}</TableCell>
                       <TableCell align="right">
                         <Link className="text-black" to={`/dashboard/task-info/${row._id}`}>
                           <i className="fa-solid fa-circle-info" />
