@@ -52,6 +52,7 @@
     "formik": "^2.2.9",
     "history": "^5.2.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
     "numeral": "^2.0.6",
     "prop-types": "^15.8.1",
     "query-string": "^7.1.1",
@@ -69,6 +70,7 @@
     "simplebar-react": "^2.3.6",
     "socket.io-client": "^4.5.2",
     "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.11"
   },
   "devDependencies": {

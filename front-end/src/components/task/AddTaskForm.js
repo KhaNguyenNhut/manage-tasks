@@ -1,7 +1,7 @@
 import { Form, FormikProvider, useFormik } from 'formik';
 import { PropTypes } from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 // material
 import { DesktopDatePicker, LoadingButton, LocalizationProvider } from '@mui/lab';
@@ -25,6 +25,7 @@ import taskTypeApi from '../../api/taskTypeApi';
 import userApi from '../../api/userApi';
 import SocketContext from '../../contexts/SocketContext';
 import { onOpenNotification } from '../../utils/notificationService';
+import { FIELD_RECORD, getFieldValue, hasExistKeyWord } from '../../utils/voiceRecord';
 
 // ----------------------------------------------------------------------
 
@@ -39,12 +40,23 @@ export default function AddTaskForm({ task }) {
   const [startDate, setStartDate] = useState(dayjs(task && task.startDate ? task.startDate : new Date()));
   const [endDate, setEndDate] = useState(dayjs(task && task.endDate ? task.endDate : new Date()));
   const { id } = useParams();
+  const { transcript, listening, browserSupportsSpeechRecognition, resetTranscript } = useSpeechRecognition();
+  const location = useLocation();
+
   const isEditTask = !!id;
   const supervisors = users.filter((each) => each.role.name === 'Admin' || each.role.name === 'Manager');
-  const { transcript, listening, browserSupportsSpeechRecognition } = useSpeechRecognition();
   const [fieldRecord, setFieldRecord] = useState('');
   const { socket } = useContext(SocketContext);
   const currentDate = dayjs(new Date());
+
+  // stop listening when change page
+  useEffect(() => {
+    if (listening) {
+      SpeechRecognition.stopListening();
+      setFieldRecord();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   const LoginSchema = Yup.object().shape({
     taskType: Yup.string().required('Loại công việc không thể để trống!'),
@@ -98,9 +110,44 @@ export default function AddTaskForm({ task }) {
 
   useEffect(() => {
     if (transcript) {
-      setFieldValue(fieldRecord, transcript);
+      if (transcript.toLocaleLowerCase().indexOf('tiếp theo') >= 0) {
+        resetTranscript();
+        setFieldRecord();
+      } else {
+        const field = hasExistKeyWord(transcript);
+        if (field) {
+          resetTranscript();
+          setFieldRecord(field);
+        }
+
+        if (fieldRecord) {
+          const { value, isResetFieldRecord } = getFieldValue(fieldRecord, transcript, users, supervisors, taskTypes);
+          if (value) {
+            setFieldValue(fieldRecord, value);
+
+            // Update value in state of start and end date field
+            if ((fieldRecord === FIELD_RECORD.endDate || fieldRecord === FIELD_RECORD.startDate) && value !== ' ') {
+              updateStartDateAndEndDate(value);
+            }
+
+            if (isResetFieldRecord) {
+              setFieldRecord();
+            }
+          }
+        }
+      }
     }
-  }, [transcript, fieldRecord, setFieldValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transcript, fieldRecord, setFieldValue, resetTranscript]);
+
+  const updateStartDateAndEndDate = (value) => {
+    if (fieldRecord === FIELD_RECORD.endDate) {
+      setEndDate(value);
+    } else {
+      setEndDate(value);
+      setStartDate(value);
+    }
+  };
 
   const getData = async () => {
     try {
@@ -129,9 +176,12 @@ export default function AddTaskForm({ task }) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
-  const startListening = (field) => {
-    SpeechRecognition.startListening({ language: 'vi-VN' });
-    setFieldRecord(field);
+  const startListening = () => {
+    if (!listening) {
+      SpeechRecognition.startListening({ language: 'vi-VN', continuous: true });
+    } else {
+      stopListening();
+    }
   };
 
   const stopListening = () => {
@@ -141,18 +191,31 @@ export default function AddTaskForm({ task }) {
 
   return (
     <FormikProvider value={formik}>
+      <div className="z-[999] fixed text-xl duration-300 cursor-pointer right-2 bottom-6 text-white hover:text-green-300 padding-4">
+        <span className="rounded-xl px-4 py-2 bg-[#2065d1] flex items-center" onClick={() => startListening()}>
+          {!listening ? (
+            <i className="mr-2 fa-solid fa-microphone" />
+          ) : (
+            <i className="mr-2 animate-spin fa-solid fa-spinner" />
+          )}
+          {!listening ? <span className="text-sm">Thực hiện</span> : <span className="text-sm">Dừng...</span>}
+        </span>
+      </div>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack className="p-8 rounded-lg shadow-lg" spacing={3}>
           <div>
-            <TextField
-              fullWidth
-              type="text"
-              label="Chủ Đề*"
-              {...getFieldProps('topic')}
-              error={Boolean(touched.topic && errors.topic)}
-              helperText={touched.topic && errors.topic}
-              className="mb-4"
-            />
+            <div className="mb-4">
+              <TextField
+                fullWidth
+                type="text"
+                label="Chủ Đề*"
+                {...getFieldProps('topic')}
+                error={Boolean(touched.topic && errors.topic)}
+                helperText={touched.topic && errors.topic}
+              />
+              {listening && fieldRecord === 'topic' && <LinearProgress color="success" />}
+            </div>
+
             <div className="flex mb-4">
               <div className="w-1/2 pr-2">
                 {supervisors.length > 0 && (
@@ -180,6 +243,7 @@ export default function AddTaskForm({ task }) {
                     )}
                   </FormControl>
                 )}
+                {listening && fieldRecord === 'supervisor' && <LinearProgress color="success" />}
               </div>
               <div className="w-1/2 pl-2">
                 {users.length > 0 && (
@@ -207,6 +271,7 @@ export default function AddTaskForm({ task }) {
                     )}
                   </FormControl>
                 )}
+                {listening && fieldRecord === 'user' && <LinearProgress color="success" />}
               </div>
             </div>
             <div className="flex mb-4">
@@ -225,6 +290,7 @@ export default function AddTaskForm({ task }) {
                         </MenuItem>
                       ))}
                     </Select>
+                    {listening && fieldRecord === 'taskType' && <LinearProgress color="success" />}
                     {Boolean(touched.taskType && errors.taskType) && (
                       <FormHelperText>Vui lòng chọn loại công việc !</FormHelperText>
                     )}
@@ -240,6 +306,7 @@ export default function AddTaskForm({ task }) {
                   error={Boolean(touched.timeG && errors.timeG)}
                   helperText={touched.timeG && errors.timeG}
                 />
+                {listening && fieldRecord === 'timeG' && <LinearProgress color="success" />}
               </div>
             </div>
           </div>
@@ -256,37 +323,6 @@ export default function AddTaskForm({ task }) {
                 rows={4}
               />
               {listening && fieldRecord === 'content' && <LinearProgress color="success" />}
-              <span
-                onTouchStart={() => startListening('content')}
-                onMouseDown={() => startListening('content')}
-                onTouchEnd={stopListening}
-                onMouseUp={stopListening}
-                className="absolute text-xl duration-300 cursor-pointer right-2 bottom-6 hover:text-green-500"
-              >
-                <i className="fa-solid fa-microphone" />
-              </span>
-            </div>
-            <div className="relative mb-4 min-h-[146px]">
-              <TextField
-                fullWidth
-                type="text"
-                label="Ghi Chú"
-                {...getFieldProps('note')}
-                error={Boolean(touched.note && errors.note)}
-                helperText={touched.note && errors.note}
-                multiline
-                rows={4}
-              />
-              {listening && fieldRecord === 'note' && <LinearProgress color="success" />}
-              <span
-                onTouchStart={() => startListening('note')}
-                onMouseDown={() => startListening('note')}
-                onTouchEnd={stopListening}
-                onMouseUp={stopListening}
-                className="absolute text-xl duration-300 cursor-pointer right-2 bottom-6 hover:text-green-500"
-              >
-                <i className="fa-solid fa-microphone" />
-              </span>
             </div>
             <div className="flex mb-4">
               <div className="w-1/2 pr-2">
@@ -295,13 +331,14 @@ export default function AddTaskForm({ task }) {
                     <DesktopDatePicker
                       label="Ngày Bắt Đầu"
                       inputFormat="MM/DD/YYYY"
-                      value={isEditTask ? dayjs(task.startDate) : startDate}
+                      value={startDate}
                       onChange={handleChangeStartDate}
-                      minDate={currentDate}
+                      minDate={isEditTask ? dayjs(task.startDate) : currentDate}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </Stack>
                 </LocalizationProvider>
+                {listening && fieldRecord === 'startDate' && <LinearProgress color="success" />}
               </div>
               <div className="w-1/2 pl-2">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -316,6 +353,7 @@ export default function AddTaskForm({ task }) {
                     />
                   </Stack>
                 </LocalizationProvider>
+                {listening && fieldRecord === 'endDate' && <LinearProgress color="success" />}
               </div>
             </div>
             <div className="mt-8">

@@ -1,13 +1,13 @@
 import { Avatar, Button, Container, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useParams, Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useParams, Link as RouterLink, useNavigate, Link } from 'react-router-dom';
 import Page from '../components/Page';
 import taskApi from '../api/taskApi';
 import subtaskApi from '../api/subtaskApi';
 import Iconify from '../components/Iconify';
 import StatusDrop from '../components/task/StatusDrop';
 import Comment from '../components/task/Comment';
-import { checkPermissionCreateAndDelete } from '../utils/checkAccess';
+import { checkPermissionCreateAndDelete, checkPermissionEdit } from '../utils/checkAccess';
 
 const isSubtask = false;
 
@@ -43,6 +43,16 @@ function TaskInfo() {
       <Container>
         {task && (
           <div className="p-8 bg-white shadow-xl rounded-2xl">
+            <div className="flex justify-end">
+              {checkPermissionEdit() && (
+                <Link
+                  to={`/dashboard/edit-task/${task._id}`}
+                  className="duration-300 cursor-pointer hover:text-blue-500 no-underline text-[#333] w-fit"
+                >
+                  <i className="fa-solid fa-pen" /> Chỉnh Sửa
+                </Link>
+              )}
+            </div>
             <p className="mb-8 text-2xl font-bold text-center">THÔNG TIN CÔNG VIỆC</p>
             <div className="flex">
               <div className="w-7/12 pr-2 mr-2">

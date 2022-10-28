@@ -13,6 +13,7 @@ function Comment({ isSubtask }) {
   const { transcript, listening, browserSupportsSpeechRecognition } = useSpeechRecognition();
 
   useEffect(() => {
+    stopListening();
     const getDate = async () => {
       if (isSubtask) {
         const response = await discussionApi.getTaskBySubtask(id);
