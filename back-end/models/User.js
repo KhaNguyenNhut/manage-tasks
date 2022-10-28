@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
 var Schema = mongoose.Schema;
 
@@ -13,7 +13,8 @@ var UserSchema = new Schema({
   officerCode: { type: String, required: true },
   isDeleted: { type: Boolean, default: false },
   birthday: { type: Date },
-  role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' },
+  role: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
+  degree: { type: String },
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);

@@ -212,21 +212,25 @@ export default function StatisticalTask() {
     setTask(newTasks);
   };
 
-  const lateTask = (endDate) => {
+  const lateTask = (endDate, status) => {
     const d = new Date();
     const day = d.getDate();
     const month = d.getMonth() + 1;
-    // const dayEnd = endDate.slice(8, 10);
     const monthOfTask = endDate.slice(5, 7);
     const dayOfTask = endDate.slice(8, 10);
-    if (parseInt(monthOfTask, 10) === month) {
-      if (parseInt(dayOfTask, 10) - day > 1 && parseInt(dayOfTask, 10) - day <= 3) {
-        return <p className="text-orange-600">Sắp trễ hạn</p>;
+    const late = day - parseInt(dayOfTask, 10);
+    const comming = parseInt(dayOfTask, 10) - day;
+    if (parseInt(monthOfTask, 10) === month || parseInt(monthOfTask, 10) < month) {
+      if ((parseInt(dayOfTask, 10) - day < 1 && status === 'Đang chờ thực hiện') || status === 'Đang thực hiện') {
+        return <p className="text-red-600">Trễ hạn {late} ngày</p>;
       }
-      if (parseInt(dayOfTask, 10) - day <= 1) {
-        return <p className="text-red-600">Trễ hạn</p>;
+      if (
+        (parseInt(dayOfTask, 10) - day >= 1 && parseInt(dayOfTask, 10) - day <= 3 && status === 'Đang chờ thực hiện') ||
+        status === 'Đang thực hiện'
+      ) {
+        return <p className="text-orange-600">Còn {comming} ngày nữa đến hạn</p>;
       }
-      return <p className="text-green-600">Chưa đến hạn</p>;
+      return null;
     }
   };
 
@@ -362,7 +366,7 @@ export default function StatisticalTask() {
                       <TableCell align="left">{row.endDate.slice(0, 10)}</TableCell>
                       <TableCell align="left">{row.status}</TableCell>
 
-                      <TableCell align="center">{lateTask(row.endDate)}</TableCell>
+                      <TableCell align="center">{lateTask(row.endDate, row.status)}</TableCell>
                       <TableCell align="right">
                         <Link className="text-black" to={`/dashboard/task-info/${row._id}`}>
                           <i className="fa-solid fa-circle-info" />

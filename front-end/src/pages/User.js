@@ -32,6 +32,7 @@ const TABLE_HEAD = [
   { id: 'stt', label: 'Số thứ tự', alignRight: true },
   { id: 'fullName', label: 'Họ và Tên', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
+  { id: 'degree', label: 'Học Vị', alignRight: false },
   { id: 'role', label: 'Vai Trò', alignRight: false },
   { id: 'officerCode', label: 'Mã Cán Bộ', alignRight: false },
   { id: 'birthday', label: 'Ngày Sinh', alignRight: false },
@@ -173,7 +174,7 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    const { _id, fullName, role, birthday, email, avatar, officerCode, phoneNumber } = row;
+                    const { _id, fullName, role, birthday, email, degree, avatar, officerCode, phoneNumber } = row;
                     const isItemSelected = selected.indexOf(fullName) !== -1;
 
                     return (
@@ -195,6 +196,7 @@ export default function User() {
                           </Stack>
                         </TableCell>
                         <TableCell align="left">{email}</TableCell>
+                        <TableCell align="left">{degree}</TableCell>
                         <TableCell align="left">{role.name}</TableCell>
                         <TableCell align="left">{officerCode}</TableCell>
                         <TableCell align="left">{birthday ? birthday.slice(0, 10) : ''}</TableCell>
