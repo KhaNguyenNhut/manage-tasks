@@ -330,6 +330,7 @@ export default function StatisticalTask() {
       }
       return null;
     }
+    return null;
   };
 
   return (
@@ -368,7 +369,7 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
-            <div className="ml-4 w-1/6">
+            <div className="w-1/6 ml-4">
               <FormControl className="w-full">
                 <InputLabel>Trạng Thái</InputLabel>
                 <Select label="Trạng Thái" value={filterByStatus} onChange={(e) => setFilterByStatus(e.target.value)}>
@@ -380,11 +381,11 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
-            <div className="ml-4 w-1/6">
+            <div className="w-1/6 ml-4">
               <FormControl className="w-full">
                 <InputLabel>Người thực hiện</InputLabel>
                 <Select
-                  className="flex justify-end px-3 w-full"
+                  className="flex justify-end w-full px-3"
                   label="Người thực hiện"
                   value={filterByUser}
                   onChange={(e) => setFilterByUser(e.target.value)}
@@ -404,7 +405,7 @@ export default function StatisticalTask() {
                 </Select>
               </FormControl>
             </div>
-            <div className="ml-4 w-1/6">
+            <div className="w-1/6 ml-4">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   label="Ngày bắt đầu"
@@ -416,7 +417,7 @@ export default function StatisticalTask() {
                 />
               </LocalizationProvider>
             </div>
-            <div className="ml-4 w-1/6">
+            <div className="w-1/6 ml-4">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   label="Ngày kết thúc"
@@ -431,7 +432,7 @@ export default function StatisticalTask() {
           </div>
 
           {filteredTasks.length > 0 && (
-            <div className="flex justify-end mb-6">
+            <div className="flex justify-end mt-4">
               <Button variant="contained" onClick={onDownload} className="w-[200px] h-[40px]" disabled={isGenerateData}>
                 {!isGenerateData && <i className="mr-2 fa-solid fa-download" />}
                 {isGenerateData ? <i className="fa-solid fa-spinner animate-spin" /> : 'Xuất file excel'}
