@@ -1,5 +1,6 @@
 import { Card, CardHeader } from '@mui/material';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -27,9 +28,9 @@ export default function LateTask({ title, subheader, tasks }) {
         return (
           <div className="flex items-center mt-4 whitespace-nowrap text-ellipsis truncate">
             <span className="pl-6 text-red-600">●</span>
-            <p className="pl-2 text-red-600">
+            <Link to={`/dashboard/task-info/${item._id}`} className="pl-2 text-red-600 no-underline">
               {item.topic} đã trễ hẹn {late} ngày
-            </p>
+            </Link>
           </div>
         );
       }
@@ -37,7 +38,9 @@ export default function LateTask({ title, subheader, tasks }) {
         return (
           <div className="flex items-center mt-4 whitespace-nowrap text-ellipsis">
             <span className="pl-6 text-orange-600">●</span>
-            <p className="pl-2 text-orange-600">{item.topic}</p>
+            <Link to={`/dashboard/task-info/${item._id}`} className="pl-2 text-orange-600 no-underline">
+              {item.topic}
+            </Link>
           </div>
         );
       }
@@ -45,10 +48,10 @@ export default function LateTask({ title, subheader, tasks }) {
         if (parseInt(endDay, 10) - day < 1) {
           return (
             <div className="flex items-center mt-4 whitespace-nowrap text-ellipsis truncate">
-              <span className="pl-6 text-red-600">●</span>
-              <p className="pl-2 text-red-600">
+              <span className="pl-6 text-red-600 no-underline">●</span>
+              <Link to={`/dashboard/task-info/${item._id}`} className="pl-2 text-red-600 no-underline">
                 {item.topic} đã trễ hẹn {late} ngày
-              </p>
+              </Link>
             </div>
           );
         }
@@ -62,6 +65,7 @@ export default function LateTask({ title, subheader, tasks }) {
         }
       }
     }
+    return '';
   };
 
   return (

@@ -70,6 +70,7 @@ export default function AddUserForm({ user }) {
       officerCode: isEditUser ? user.officerCode : '',
       birthday: isEditUser ? user.birthday : '',
       role: isEditUser && user.role ? user.role._id : '',
+      degree: isEditUser ? user.degree : '',
     },
     validationSchema: LoginSchema,
     onSubmit: async () => {

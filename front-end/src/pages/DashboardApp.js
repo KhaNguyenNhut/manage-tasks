@@ -2,6 +2,7 @@
 import { Container, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import roleApi from '../api/roleApi';
 import taskApi from '../api/taskApi';
 import taskTypeApi from '../api/taskTypeApi';
@@ -143,29 +144,42 @@ export default function DashboardApp() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Công việc"
-              total={tasks.length}
-              color="success"
-              icon={'ant-design:code-sandbox-outlined'}
-            />
+            <Link className="no-underline" to="/dashboard/task">
+              <AppWidgetSummary
+                title="Công việc"
+                total={tasks.length}
+                color="success"
+                icon={'ant-design:code-sandbox-outlined'}
+              />
+            </Link>
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Người dùng" total={users.length} icon={'ant-design:user-outlined'} />
+            <Link className="no-underline" to="/dashboard/user">
+              <AppWidgetSummary title="Người dùng" total={users.length} icon={'ant-design:user-outlined'} />
+            </Link>
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Vai trò" total={roles.length} color="warning" icon={'ant-design:star-outlined'} />
+            <Link className="no-underline" to="/dashboard/role">
+              <AppWidgetSummary
+                title="Vai trò"
+                total={roles.length}
+                color="warning"
+                icon={'ant-design:star-outlined'}
+              />
+            </Link>
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Loại công việc"
-              total={taskType.length}
-              color="error"
-              icon={'ant-design:appstore-outlined'}
-            />
+            <Link className="no-underline" to="/dashboard/type-task">
+              <AppWidgetSummary
+                title="Loại công việc"
+                total={taskType.length}
+                color="error"
+                icon={'ant-design:appstore-outlined'}
+              />
+            </Link>
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>

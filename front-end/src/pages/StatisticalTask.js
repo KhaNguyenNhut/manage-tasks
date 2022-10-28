@@ -26,10 +26,10 @@ import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as XLSX from 'xlsx';
+import subtaskApi from '../api/subtaskApi';
 // mock
 import taskApi from '../api/taskApi';
 import taskTypeApi from '../api/taskTypeApi';
-import subtaskApi from '../api/subtaskApi';
 import userApi from '../api/userApi';
 // components
 import Page from '../components/Page';
@@ -48,7 +48,6 @@ const TABLE_HEAD = [
   { id: 'topic', label: 'Chủ đề', alignRight: false },
   { id: 'user', label: 'Người Thực Hiện', alignRight: false },
   { id: 'timeG', label: 'Giờ G', alignRight: false },
-  { id: 'startDate', label: 'Ngày Bắt Đầu', alignRight: false },
   { id: 'endDate', label: 'Ngày Kết Thúc', alignRight: false },
   { id: 'status', label: 'Trạng Thái', alignRight: false },
   { id: 'late', label: 'Trễ hạn', alignRight: false },
@@ -145,7 +144,7 @@ export default function StatisticalTask() {
   const [filterByTaskType, setFilterByTaskType] = useState('');
   const [filterByStatus, setFilterByStatus] = useState('');
   const [filterByUser, setFilterByUser] = useState('');
-  const [startDate, setStartDate] = useState();
+  const [startDate] = useState();
   const [endDate, setEndDate] = useState();
   const [isGenerateData, setIsGenerateData] = useState(false);
 
@@ -407,18 +406,6 @@ export default function StatisticalTask() {
             <div className="ml-4 w-1/6">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
-                  label="Ngày bắt đầu"
-                  value={startDate}
-                  onChange={(newValue) => {
-                    setStartDate(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </div>
-            <div className="ml-4 w-1/6">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
                   label="Ngày kết thúc"
                   value={endDate}
                   onChange={(newValue) => {
@@ -468,7 +455,6 @@ export default function StatisticalTask() {
                         </div>
                       </TableCell>
                       <TableCell align="left">{row.timeG}</TableCell>
-                      <TableCell align="left">{row.startDate.slice(0, 10)}</TableCell>
                       <TableCell align="left">{row.endDate.slice(0, 10)}</TableCell>
                       <TableCell align="left">{row.status}</TableCell>
 
