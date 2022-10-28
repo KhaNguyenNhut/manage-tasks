@@ -33,12 +33,14 @@ import { checkPermissionCreateAndDelete } from '../utils/checkAccess';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: 'stt', label: 'Số thứ tự', alignRight: true },
   { id: 'taskType', label: 'Loại Công Việc', alignRight: false },
   { id: 'topic', label: 'Chủ đề', alignRight: false },
   { id: 'user', label: 'Người Thực Hiện', alignRight: false },
+  { id: 'supervisor', label: 'Người Giám Sát', alignRight: false },
   { id: 'timeG', label: 'Giờ G', alignRight: false },
+  { id: 'createdAt', label: 'Ngày Tạo', alignRight: false },
   { id: 'status', label: 'Trạng Thái', alignRight: false },
-  { id: 'link', label: 'Liên kết', alignRight: false },
   { id: '' },
 ];
 
@@ -204,8 +206,9 @@ export default function Task() {
                   hideCheckbox={hideCheckbox}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                     <TableRow hover key={row._id} tabIndex={-1}>
+                      <TableCell align="center">{index + 1}</TableCell>
                       <TableCell align="left">{row.taskType.name}</TableCell>
                       <Tooltip title={row.topic}>
                         <TableCell align="left truncate max-w-[100px]">{row.topic}</TableCell>
@@ -219,17 +222,18 @@ export default function Task() {
                           <span className="inline-block ml-2">{row.user.fullName}</span>
                         </div>
                       </TableCell>
-                      <TableCell align="left">{row.timeG}</TableCell>
-                      <TableCell align="left">{row.status}</TableCell>
                       <TableCell align="left">
-                        <a
-                          href={/^http/.test(row.link) ? row.link : `https://${row.link}`}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          {row.link}
-                        </a>
+                        <div className="flex items-center">
+                          <Avatar
+                            alt={row.supervisor.fullName}
+                            src={row.supervisor.avatar ? process.env.REACT_APP_URL_IMG + row.supervisor.avatar : ''}
+                          />
+                          <span className="inline-block ml-2">{row.supervisor.fullName}</span>
+                        </div>
                       </TableCell>
+                      <TableCell align="left">{row.timeG}</TableCell>
+                      <TableCell align="left">{row.createdAt.slice(0, 10)}</TableCell>
+                      <TableCell align="left">{row.status}</TableCell>
                       <TableCell align="right">
                         <TaskMoreMenu
                           id={row._id}
