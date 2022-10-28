@@ -22,7 +22,7 @@ export default function LateTask({ title, subheader, tasks }) {
     const endMonth = item.endDate.slice(5, 7);
     const userIdItem = item.user._id;
     const late = day - parseInt(endDay, 10);
-    if (parseInt(endMonth, 10) === month) {
+    if (parseInt(endMonth, 10) === month || parseInt(endMonth, 10) < month) {
       if (parseInt(endDay, 10) - day < 1 && userIdItem === userId) {
         return (
           <div className="flex items-center mt-4 whitespace-nowrap text-ellipsis truncate">

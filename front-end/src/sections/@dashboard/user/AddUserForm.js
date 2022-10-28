@@ -126,6 +126,7 @@ export default function AddUserForm({ user }) {
                   />
                 </div>
               </div>
+
               <div className="flex mb-4">
                 <div className="w-1/2 pr-2">
                   <TextField
@@ -199,6 +200,18 @@ export default function AddUserForm({ user }) {
                       {Boolean(touched.role && errors.role) && <FormHelperText>Vui lòng chọn vai trò !</FormHelperText>}
                     </FormControl>
                   )}
+                </div>
+              </div>
+              <div className="flex mb-4">
+                <div className="w-full pr-2">
+                  <TextField
+                    fullWidth
+                    type="text"
+                    label="Học Vị*"
+                    {...getFieldProps('degree')}
+                    error={Boolean(touched.degree && errors.degree)}
+                    helperText={touched.degree && errors.degree}
+                  />
                 </div>
               </div>
               <div className="flex items-center justify-center mt-8">
