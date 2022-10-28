@@ -15,7 +15,7 @@ var SubTaskSchema = new Schema({
   timeG: { type: Number },
   note: { type: String },
   link: { type: String },
-  progress: { type: Number, required: true },
+  progress: { type: Number, default: 0 },
   createdAt: { type: Date, default: new Date() },
 });
 

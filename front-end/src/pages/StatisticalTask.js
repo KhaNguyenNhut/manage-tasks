@@ -1,6 +1,7 @@
 // material
 import {
   Avatar,
+  Button,
   Card,
   Container,
   FormControl,
@@ -24,9 +25,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 // mock
 import taskApi from '../api/taskApi';
 import taskTypeApi from '../api/taskTypeApi';
+import subtaskApi from '../api/subtaskApi';
 import userApi from '../api/userApi';
 // components
 import Page from '../components/Page';
@@ -143,6 +146,7 @@ export default function StatisticalTask() {
   const [filterByUser, setFilterByUser] = useState('');
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+  const [isGenerateData, setIsGenerateData] = useState(false);
 
   const hideCheckbox = true;
 
@@ -210,6 +214,100 @@ export default function StatisticalTask() {
     newTasks[idxTask] = task;
     setTask(newTasks);
   };
+  const convertJsonToSheet = (index, task, subtask, worker, startDate, endDate, status, progress) => ({
+    STT: index,
+    'Công việc': task,
+    'Nhiệm vụ': subtask,
+    'Người thực hiện': worker,
+    'Thời gian bắt đầu': startDate,
+    'Thời gian kết thúc': endDate,
+    'Trạng Thái': status,
+    'Tỷ lệ % hoàn thành': progress,
+  });
+
+  const formatDate = (date) => date.slice(0, 10);
+
+  const generateData = async () => {
+    const data = [];
+    let count = 1;
+    try {
+      for (let idx = 0; idx < filteredTasks.length; idx += 1) {
+        const task = filteredTasks[idx];
+        // eslint-disable-next-line no-await-in-loop
+        const subtasks = await subtaskApi.getSubtasks(task._id);
+        if (subtasks && subtasks.length > 0) {
+          // eslint-disable-next-line no-loop-func
+          subtasks.forEach((each, index) => {
+            if (index === 0) {
+              data.push(
+                convertJsonToSheet(
+                  count,
+                  task.topic,
+                  each.topic,
+                  each.user.fullName,
+                  formatDate(each.startDate),
+                  formatDate(each.endDate),
+                  each.status,
+                  each.progress
+                )
+              );
+              count += 1;
+            } else {
+              data.push(
+                convertJsonToSheet(
+                  '',
+                  '',
+                  each.topic,
+                  each.user.fullName,
+                  formatDate(each.startDate),
+                  formatDate(each.endDate),
+                  each.status,
+                  each.progress
+                )
+              );
+            }
+          });
+        } else {
+          data.push(
+            convertJsonToSheet(
+              count,
+              task.topic,
+              task.topic,
+              task.user.fullName,
+              formatDate(task.startDate),
+              formatDate(task.endDate),
+              task.status,
+              task.progress
+            )
+          );
+          count += 1;
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    return data;
+  };
+
+  const onDownload = async () => {
+    setIsGenerateData(true);
+    const worksheet = XLSX.utils.json_to_sheet(await generateData());
+    // Set cell width when export data
+    worksheet['!cols'] = [
+      { wch: 5 }, // STT
+      { wch: 40 }, // task,
+      { wch: 40 }, // subtask,
+      { wch: 15 }, // worker,
+      { wch: 16 }, // startDate,
+      { wch: 16 }, // endDate,
+      { wch: 17 }, // status,
+      { wch: 17 }, // progress,
+    ];
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Thống kê công việc');
+    XLSX.writeFile(workbook, 'DataSheet.xlsx');
+    setIsGenerateData(false);
+  };
 
   return (
     <Page title="Thống kê công việc">
@@ -221,7 +319,6 @@ export default function StatisticalTask() {
           handleUpdateState={handleUpdateState}
         />
       )}
-
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography variant="h4" gutterBottom>
@@ -309,6 +406,15 @@ export default function StatisticalTask() {
               </LocalizationProvider>
             </div>
           </div>
+
+          {filteredTasks.length > 0 && (
+            <div className="flex justify-end mb-6">
+              <Button variant="contained" onClick={onDownload} className="w-[200px] h-[40px]" disabled={isGenerateData}>
+                {!isGenerateData && <i className="mr-2 fa-solid fa-download" />}
+                {isGenerateData ? <i className="fa-solid fa-spinner animate-spin" /> : 'Xuất file excel'}
+              </Button>
+            </div>
+          )}
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>

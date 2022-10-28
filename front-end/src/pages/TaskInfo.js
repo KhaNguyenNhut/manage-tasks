@@ -1,12 +1,12 @@
-import { Avatar, Button, Container, Tooltip, Typography } from '@mui/material';
+import { Avatar, Button, Container, Slider, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useParams, Link as RouterLink, useNavigate, Link } from 'react-router-dom';
-import Page from '../components/Page';
-import taskApi from '../api/taskApi';
+import { Link, Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import subtaskApi from '../api/subtaskApi';
+import taskApi from '../api/taskApi';
 import Iconify from '../components/Iconify';
-import StatusDrop from '../components/task/StatusDrop';
+import Page from '../components/Page';
 import Comment from '../components/task/Comment';
+import StatusDrop from '../components/task/StatusDrop';
 import { checkPermissionCreateAndDelete, checkPermissionEdit } from '../utils/checkAccess';
 
 const isSubtask = false;
@@ -16,11 +16,13 @@ function TaskInfo() {
   const { id } = useParams();
   const [task, setTask] = useState();
   const [subtasks, setSubTasks] = useState([]);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const getInfo = async () => {
       const response = await taskApi.getByID(id);
       setTask(response);
+      setProgress(response.progress);
 
       const responseSubtasks = await subtaskApi.getSubtasks(id);
       setSubTasks(responseSubtasks);
@@ -32,12 +34,24 @@ function TaskInfo() {
   const onUpdateTask = async (status) => {
     const newTask = { ...task };
     newTask.status = status;
+
+    if (status === 'Hoàn thành') {
+      setProgress(100);
+      newTask.progress = 100;
+    }
+    setTask(newTask);
     await taskApi.update(newTask, newTask._id);
   };
 
   const onClickSubTask = (subtaskId) => {
     navigate(`/dashboard/subtask-info/${subtaskId}`);
   };
+
+  const handleChange = (e) => {
+    setProgress(e.target.value);
+    taskApi.updateProgress({ id: task._id, progress: e.target.value });
+  };
+
   return (
     <Page title="Thông Tin Cá Nhân">
       <Container>
@@ -59,6 +73,19 @@ function TaskInfo() {
                 <Typography id="modal-modal-title" variant="h6" component="h2" className="text-2xl">
                   {task.topic}
                 </Typography>
+                <p className="mt-4 font-semibold">Tiến độ công việc: {progress}%</p>
+                <Slider
+                  aria-label="Progress"
+                  value={progress}
+                  valueLabelDisplay="auto"
+                  step={5}
+                  marks
+                  min={0}
+                  max={100}
+                  size="small"
+                  onChange={handleChange}
+                  disabled={task && task.status === 'Hoàn thành'}
+                />
                 <p className="mt-4">
                   Loại công việc: <span className="font-semibold">{task.taskType.name}</span>
                 </p>

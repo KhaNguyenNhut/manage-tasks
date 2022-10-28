@@ -94,3 +94,20 @@ exports.getTaskByUser = async (req, res) => {
     res.status(400).json({ message: err });
   }
 };
+
+exports.updateProgress = async (req, res) => {
+  try {
+    const { id, progress } = req.body;
+    let task = await Task.findById(id);
+    if (!task) {
+      res.status(400).json({ message: 'Not found task' });
+    }
+
+    task.progress = progress;
+
+    await task.save();
+    res.status(200).json({ success: true });
+  } catch (err) {
+    res.status(400).json({ message: err });
+  }
+};

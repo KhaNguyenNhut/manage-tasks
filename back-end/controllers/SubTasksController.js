@@ -98,3 +98,19 @@ exports.getSubtasksByTask = async (req, res) => {
     res.status(400).json({ message: err });
   }
 };
+
+exports.updateProgress = async (req, res) => {
+  try {
+    const { id, progress } = req.body;
+    let subtask = await SubTask.findById(id);
+    if (!subtask) {
+      res.status(400).json({ message: 'Not found subtask' });
+    }
+
+    subtask.progress = progress;
+    await subtask.save();
+    res.status(200).json({ success: true });
+  } catch (err) {
+    res.status(400).json({ message: err });
+  }
+};

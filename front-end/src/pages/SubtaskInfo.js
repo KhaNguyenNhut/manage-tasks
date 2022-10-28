@@ -1,4 +1,4 @@
-import { Avatar, Container, Typography } from '@mui/material';
+import { Avatar, Container, Slider, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { checkPermissionEdit } from '../utils/checkAccess';
@@ -12,11 +12,13 @@ const isSubtask = true;
 function SubTaskInfo() {
   const { id } = useParams();
   const [subtask, setSubTask] = useState();
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const getInfo = async () => {
       const responseSubtasks = await subtaskApi.getByID(id);
       setSubTask(responseSubtasks);
+      setProgress(responseSubtasks.progress);
     };
     getInfo();
   }, [id]);
@@ -24,7 +26,19 @@ function SubTaskInfo() {
   const onUpdateTask = async (status) => {
     const newTask = { ...subtask };
     newTask.status = status;
+
+    if (status === 'Hoàn thành') {
+      setProgress(100);
+      newTask.progress = 100;
+    }
+    setSubTask(newTask);
+
     await subtaskApi.update(newTask, newTask._id);
+  };
+
+  const handleChange = (e) => {
+    setProgress(e.target.value);
+    subtaskApi.updateProgress({ id: subtask._id, progress: e.target.value });
   };
 
   return (
@@ -54,6 +68,19 @@ function SubTaskInfo() {
                 <Typography id="modal-modal-title" variant="h6" component="h2" className="text-2xl">
                   {subtask.topic}
                 </Typography>
+                <p className="mt-4 font-semibold">Tiến độ công việc: {progress}%</p>
+                <Slider
+                  aria-label="Progress"
+                  value={progress}
+                  valueLabelDisplay="auto"
+                  step={5}
+                  marks
+                  min={0}
+                  max={100}
+                  size="small"
+                  onChange={handleChange}
+                  disabled={subtask && subtask.status === 'Hoàn thành'}
+                />
                 <p className="mt-4">
                   Loại công việc: <span className="font-semibold">{subtask.taskType.name}</span>
                 </p>
