@@ -144,7 +144,7 @@ export default function StatisticalTask() {
   const [filterByTaskType, setFilterByTaskType] = useState('');
   const [filterByStatus, setFilterByStatus] = useState('');
   const [filterByUser, setFilterByUser] = useState('');
-  const [startDate] = useState();
+  const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [isGenerateData, setIsGenerateData] = useState(false);
 
@@ -403,6 +403,18 @@ export default function StatisticalTask() {
                   ))}
                 </Select>
               </FormControl>
+            </div>
+            <div className="w-1/6 ml-4">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  label="Ngày bắt đầu"
+                  value={startDate}
+                  onChange={(newValue) => {
+                    setStartDate(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
             </div>
             <div className="w-1/6 ml-4">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
