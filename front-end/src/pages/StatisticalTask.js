@@ -272,7 +272,7 @@ export default function StatisticalTask() {
             convertJsonToSheet(
               count,
               task.topic,
-              task.topic,
+              '',
               task.user.fullName,
               formatDate(task.startDate),
               formatDate(task.endDate),
