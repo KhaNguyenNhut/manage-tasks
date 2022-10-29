@@ -20,14 +20,14 @@ const RootStyle = styled(AppBar)(({ theme }) => ({
   backdropFilter: 'blur(6px)',
   WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
   backgroundColor: alpha(theme.palette.background.default, 0.72),
-  [theme.breakpoints.up('lg')]: {
+  [theme.breakpoints.up('xl')]: {
     width: `calc(100% - ${DRAWER_WIDTH + 1}px)`,
   },
 }));
 
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   minHeight: APPBAR_MOBILE,
-  [theme.breakpoints.up('lg')]: {
+  [theme.breakpoints.up('xl')]: {
     minHeight: APPBAR_DESKTOP,
     padding: theme.spacing(0, 5),
   },
@@ -43,7 +43,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
   return (
     <RootStyle>
       <ToolbarStyle>
-        <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}>
+        <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { xl: 'none' } }}>
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
