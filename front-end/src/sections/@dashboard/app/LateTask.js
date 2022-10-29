@@ -29,8 +29,8 @@ export default function LateTask({ title, subheader, tasks }) {
           <div key={item._id} className="flex items-center mt-4">
             <span className="pl-6 text-red-600">●</span>
             <Link to={`/dashboard/task-info/${item._id}`} className="pl-2 text-red-600 no-underline">
-              <span className="font-bold">"{item.user.fullName}"</span> đang thực hiện {item.topic} đã trễ hẹn {late}{' '}
-              ngày
+              <span className="font-bold">{userIdItem === userId ? 'Bạn ' : `"${item.user.fullName}"`}</span>
+              đang thực hiện {item.topic} đã trễ hẹn {late} ngày
             </Link>
           </div>
         );
@@ -40,7 +40,8 @@ export default function LateTask({ title, subheader, tasks }) {
           <div key={item._id} className="flex items-center mt-4 whitespace-nowrap text-ellipsis">
             <span className="pl-6 text-orange-600">●</span>
             <Link to={`/dashboard/task-info/${item._id}`} className="pl-2 text-orange-600 no-underline">
-              <span className="font-bold">"{item.user.fullName}"</span> đang thực hiện {item.topic}
+              <span className="font-bold">{userIdItem === userId ? 'Bạn ' : `"${item.user.fullName}"`}</span>
+              đang thực hiện {item.topic}
             </Link>
           </div>
         );
@@ -51,8 +52,8 @@ export default function LateTask({ title, subheader, tasks }) {
             <div key={item._id} className="flex items-center mt-4">
               <span className="pl-6 text-red-600 no-underline">●</span>
               <Link to={`/dashboard/task-info/${item._id}`} className="pl-2 text-red-600 no-underline">
-                <span className="font-bold">"{item.user.fullName}"</span> đang thực hiện {item.topic} đã trễ hẹn {late}{' '}
-                ngày
+                <span className="font-bold">{userIdItem === userId ? 'Bạn ' : `"${item.user.fullName}"`}</span> đang
+                thực hiện {item.topic} đã trễ hẹn {late} ngày
               </Link>
             </div>
           );
@@ -62,7 +63,8 @@ export default function LateTask({ title, subheader, tasks }) {
             <div key={item._id} className="flex items-center mt-4 whitespace-nowrap text-ellipsis">
               <span className="pl-6 text-orange-600">●</span>
               <p className="pl-2 text-orange-600">
-                <span className="font-bold">"{item.user.fullName}"</span> đang thực hiện {item.topic}
+                <span className="font-bold">{userIdItem === userId ? 'Bạn ' : `"${item.user.fullName}"`}</span> đang
+                thực hiện {item.topic}
               </p>
             </div>
           );
