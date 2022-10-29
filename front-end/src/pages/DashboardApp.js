@@ -33,10 +33,10 @@ export default function DashboardApp() {
 
   const taskInYear = countDataInYear(tasks);
   const userInYear = countDataInYear(users);
-  const taskWaiting = tasks.filter((e) => e.status === 'Đang chờ thực hiện');
-  const taskDoing = tasks.filter((e) => e.status === 'Đang thực hiện');
-  const taskFinish = tasks.filter((e) => e.status === 'Hoàn thành');
-  const taskCancel = tasks.filter((e) => e.status === 'Hủy bỏ');
+  const taskWaiting = tasks.filter((e) => e.status === 'Đang chờ thực hiện').length;
+  const taskDoing = tasks.filter((e) => e.status === 'Đang thực hiện').length;
+  const taskFinish = tasks.filter((e) => e.status === 'Hoàn thành').length;
+  const taskCancel = tasks.filter((e) => e.status === 'Hủy bỏ').length;
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -109,7 +109,11 @@ export default function DashboardApp() {
             </Link>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={6} lg={12}>
+            <LateTask title="Thống kê công việc trễ hạn" subheader="Số lượng công việc sắp đến hạn" tasks={tasks} />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={12}>
             <AppWebsiteVisits
               title="Thống kê số lượng công việc và người dùng"
               subheader="trong năm 2022"
@@ -140,18 +144,8 @@ export default function DashboardApp() {
                   fill: 'gradient',
                   data: userInYear,
                 },
-                {
-                  name: '',
-                  type: 'line',
-                  fill: 'solid',
-                  data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                },
               ]}
             />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <LateTask title="Thống kê công việc trễ hạn" subheader="Số lượng công việc sắp đến hạn" tasks={tasks} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>

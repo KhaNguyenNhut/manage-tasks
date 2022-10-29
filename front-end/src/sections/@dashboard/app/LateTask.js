@@ -26,20 +26,21 @@ export default function LateTask({ title, subheader, tasks }) {
     if (parseInt(endMonth, 10) === month || parseInt(endMonth, 10) < month) {
       if (parseInt(endDay, 10) - day < 1 && userIdItem === userId) {
         return (
-          <div className="flex items-center mt-4 whitespace-nowrap text-ellipsis truncate">
+          <div key={item._id} className="flex items-center mt-4">
             <span className="pl-6 text-red-600">●</span>
             <Link to={`/dashboard/task-info/${item._id}`} className="pl-2 text-red-600 no-underline">
-              {item.topic} đã trễ hẹn {late} ngày
+              <span className="font-bold">"{item.user.fullName}"</span> đang thực hiện {item.topic} đã trễ hẹn {late}{' '}
+              ngày
             </Link>
           </div>
         );
       }
       if (parseInt(endDay, 10) - day < 3 && userIdItem === userId) {
         return (
-          <div className="flex items-center mt-4 whitespace-nowrap text-ellipsis">
+          <div key={item._id} className="flex items-center mt-4 whitespace-nowrap text-ellipsis">
             <span className="pl-6 text-orange-600">●</span>
             <Link to={`/dashboard/task-info/${item._id}`} className="pl-2 text-orange-600 no-underline">
-              {item.topic}
+              <span className="font-bold">"{item.user.fullName}"</span> đang thực hiện {item.topic}
             </Link>
           </div>
         );
@@ -47,19 +48,22 @@ export default function LateTask({ title, subheader, tasks }) {
       if (userRole === '63393b471a8bf398f0cca454') {
         if (parseInt(endDay, 10) - day < 1) {
           return (
-            <div className="flex items-center mt-4 whitespace-nowrap text-ellipsis truncate">
+            <div key={item._id} className="flex items-center mt-4">
               <span className="pl-6 text-red-600 no-underline">●</span>
               <Link to={`/dashboard/task-info/${item._id}`} className="pl-2 text-red-600 no-underline">
-                {item.topic} đã trễ hẹn {late} ngày
+                <span className="font-bold">"{item.user.fullName}"</span> đang thực hiện {item.topic} đã trễ hẹn {late}{' '}
+                ngày
               </Link>
             </div>
           );
         }
         if (parseInt(endDay, 10) - day < 3) {
           return (
-            <div className="flex items-center mt-4 whitespace-nowrap text-ellipsis">
+            <div key={item._id} className="flex items-center mt-4 whitespace-nowrap text-ellipsis">
               <span className="pl-6 text-orange-600">●</span>
-              <p className="pl-2 text-orange-600">{item.topic}</p>
+              <p className="pl-2 text-orange-600">
+                <span className="font-bold">"{item.user.fullName}"</span> đang thực hiện {item.topic}
+              </p>
             </div>
           );
         }
@@ -69,9 +73,9 @@ export default function LateTask({ title, subheader, tasks }) {
   };
 
   return (
-    <Card className="h-full">
+    <Card className="h-full  pb-8">
       <CardHeader title={title} subheader={subheader} />
-      {tasks && tasks.map((item) => endTaskFunc(item))}
+      <div className="max-h-[300px] overflow-auto">{tasks && tasks.map((item) => endTaskFunc(item))}</div>
     </Card>
   );
 }

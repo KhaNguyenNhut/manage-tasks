@@ -26,3 +26,24 @@ table thead tr th:last-child {
 table thead tr th span:hover {
   color: white !important;
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
