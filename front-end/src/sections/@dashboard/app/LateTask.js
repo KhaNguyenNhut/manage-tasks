@@ -18,7 +18,7 @@ export default function LateTask({ title, subheader, tasks }) {
   const userRole = user.role._id;
   const userId = user._id;
 
-  const enntaskFunc = (item) => {
+  const endTaskFunc = (item) => {
     const endDay = item.endDate.slice(8, 10);
     const endMonth = item.endDate.slice(5, 7);
     const userIdItem = item.user._id;
@@ -71,7 +71,7 @@ export default function LateTask({ title, subheader, tasks }) {
   return (
     <Card className="h-full">
       <CardHeader title={title} subheader={subheader} />
-      {tasks && tasks.map((item) => enntaskFunc(item))}
+      {tasks && tasks.map((item) => endTaskFunc(item))}
     </Card>
   );
 }

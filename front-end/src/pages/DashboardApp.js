@@ -16,6 +16,14 @@ import LateTask from '../sections/@dashboard/app/LateTask';
 
 // ----------------------------------------------------------------------
 
+const countDataInYear = (array) => {
+  const data = [];
+  for (let index = 1; index <= 12; index += 1) {
+    data.push(array.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === index).length);
+  }
+  return data;
+};
+
 export default function DashboardApp() {
   const theme = useTheme();
   const [tasks, setTask] = useState([]);
@@ -23,102 +31,21 @@ export default function DashboardApp() {
   const [taskType, setTaskType] = useState([]);
   const [roles, setRoles] = useState([]);
 
-  const [january, setJanuary] = useState(0);
-  const [february, setFebruary] = useState(0);
-  const [march, setMarch] = useState(0);
-  const [april, setApril] = useState(0);
-  const [may, setMay] = useState(0);
-  const [june, setJune] = useState(0);
-  const [july, setJuly] = useState(0);
-  const [august, setAugust] = useState(0);
-  const [september, setSeptember] = useState(0);
-  const [october, setOctober] = useState(0);
-  const [november, setNovember] = useState(0);
-  const [december, setDecember] = useState(0);
-
-  const [user1, setUser1] = useState(0);
-  const [user2, setUser2] = useState(0);
-  const [user3, setUser3] = useState(0);
-  const [user4, setUser4] = useState(0);
-  const [user5, setUser5] = useState(0);
-  const [user6, setUser6] = useState(0);
-  const [user7, setUser7] = useState(0);
-  const [user8, setUser8] = useState(0);
-  const [user9, setUser9] = useState(0);
-  const [user10, setUser10] = useState(0);
-  const [user11, setUser11] = useState(0);
-  const [user12, setUser12] = useState(0);
-
-  const [taskWaiting, setTaskWaiting] = useState(0);
-  const [taskDoing, setTaskDoing] = useState(0);
-  const [taskFinish, setTaskFinish] = useState(0);
-  const [taskCancel, setTaskCancel] = useState(0);
+  const taskInYear = countDataInYear(tasks);
+  const userInYear = countDataInYear(users);
+  const taskWaiting = tasks.filter((e) => e.status === 'Đang chờ thực hiện');
+  const taskDoing = tasks.filter((e) => e.status === 'Đang thực hiện');
+  const taskFinish = tasks.filter((e) => e.status === 'Hoàn thành');
+  const taskCancel = tasks.filter((e) => e.status === 'Hủy bỏ');
 
   useEffect(() => {
     const fetchTask = async () => {
       const response = await taskApi.getAll();
       setTask(response);
-      const month1 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 1);
-      setJanuary(month1.length);
-      const month2 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 2);
-      setFebruary(month2.length);
-      const month3 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 3);
-      setMarch(month3.length);
-      const month4 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 4);
-      setApril(month4.length);
-      const month5 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 5);
-      setMay(month5.length);
-      const month6 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 6);
-      setJune(month6.length);
-      const month7 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 7);
-      setJuly(month7.length);
-      const month8 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 8);
-      setAugust(month8.length);
-      const month9 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 9);
-      setSeptember(month9.length);
-      const month10 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 10);
-      setOctober(month10.length);
-      const month11 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 11);
-      setNovember(month11.length);
-      const month12 = response.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 12);
-      setDecember(month12.length);
-
-      const task1 = response.filter((e) => e.status === 'Đang chờ thực hiện');
-      setTaskWaiting(task1.length);
-      const task2 = response.filter((e) => e.status === 'Đang thực hiện');
-      setTaskDoing(task2.length);
-      const task3 = response.filter((e) => e.status === 'Hoàn thành');
-      setTaskFinish(task3.length);
-      const task4 = response.filter((e) => e.status === 'Hủy bỏ');
-      setTaskCancel(task4.length);
     };
     const fetchUsers = async () => {
       const responseUser = await userApi.getAll();
       setUsers(responseUser);
-      const users1 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 1);
-      setUser1(users1.length);
-      const user2 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 2);
-      setUser2(user2.length);
-      const user3 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 3);
-      setUser3(user3.length);
-      const user4 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 4);
-      setUser4(user4.length);
-      const user5 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 5);
-      setUser5(user5.length);
-      const user6 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 6);
-      setUser6(user6.length);
-      const user7 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 7);
-      setUser7(user7.length);
-      const user8 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 8);
-      setUser8(user8.length);
-      const user9 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 9);
-      setUser9(user9.length);
-      const users10 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 10);
-      setUser10(users10.length);
-      const user11 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 11);
-      setUser11(user11.length);
-      const user12 = responseUser.filter((e) => parseInt(e.createdAt.substring(5, 7), 10) === 12);
-      setUser12(user12.length);
     };
     const fetchTaskType = async () => {
       const response = await taskTypeApi.getTaskTypes();
@@ -205,26 +132,13 @@ export default function DashboardApp() {
                   name: 'Công việc',
                   type: 'column',
                   fill: 'solid',
-                  data: [
-                    january,
-                    february,
-                    march,
-                    april,
-                    may,
-                    june,
-                    july,
-                    august,
-                    september,
-                    october,
-                    november,
-                    december,
-                  ],
+                  data: taskInYear,
                 },
                 {
                   name: 'Người dùng',
                   type: 'area',
                   fill: 'gradient',
-                  data: [user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11, user12],
+                  data: userInYear,
                 },
                 {
                   name: '',
