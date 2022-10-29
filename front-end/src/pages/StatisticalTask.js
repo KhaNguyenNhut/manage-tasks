@@ -305,7 +305,7 @@ export default function StatisticalTask() {
     ];
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Thống kê công việc');
-    XLSX.writeFile(workbook, 'DataSheet.xlsx');
+    XLSX.writeFile(workbook, 'Thống Kê Báo Cáo.xlsx');
     setIsGenerateData(false);
   };
 
