@@ -15,13 +15,10 @@ import UploadImg from '../user/UploadImg';
 
 // ----------------------------------------------------------------------
 
-export default function ProfileForm() {
+export default function ProfileForm({ user }) {
   const dispatch = useDispatch();
   const [images, setImages] = useState([]);
-  const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user')));
-  const [birthday, setBirthday] = useState(
-    dayjs(currentUser && currentUser.birthday ? currentUser.birthday : '2000-08-18')
-  );
+  const [birthday, setBirthday] = useState(dayjs(user && user.birthday ? user.birthday : '2000-08-18'));
 
   const handleChange = (newBirthday) => {
     setBirthday(newBirthday);
@@ -42,17 +39,17 @@ export default function ProfileForm() {
 
   const formik = useFormik({
     initialValues: {
-      avatar: currentUser ? currentUser.avatar : '',
-      fullName: currentUser ? currentUser.fullName : '',
-      username: currentUser ? currentUser.username : '',
+      avatar: user ? user.avatar : '',
+      fullName: user ? user.fullName : '',
+      username: user ? user.username : '',
       password: '',
-      email: currentUser ? currentUser.email : '',
-      phoneNumber: currentUser ? currentUser.phoneNumber : '',
-      officerCode: currentUser ? currentUser.officerCode : '',
-      birthday: currentUser ? currentUser.birthday : '',
-      role: currentUser && currentUser.role ? currentUser.role._id : '',
-      degree: currentUser ? currentUser.degree : '',
-      link: currentUser ? currentUser.link : '',
+      email: user ? user.email : '',
+      phoneNumber: user ? user.phoneNumber : '',
+      officerCode: user ? user.officerCode : '',
+      birthday: user ? user.birthday : '',
+      role: user && user.role ? user.role._id : '',
+      degree: user ? user.degree : '',
+      link: user ? user.link : '',
     },
     validationSchema: LoginSchema,
     onSubmit: async () => {
@@ -64,9 +61,8 @@ export default function ProfileForm() {
           await userApi.uploadImg(formData);
         }
         formik.values.birthday = birthday;
-        const response = await userApi.update(formik.values, currentUser._id);
+        const response = await userApi.update(formik.values, user._id);
         localStorage.setItem('user', JSON.stringify(response));
-        setCurrentUser(response);
         dispatch(updateUser(response));
         onOpenNotification('Cập nhật thông tin thành công !');
       } catch ({ response }) {
@@ -83,7 +79,7 @@ export default function ProfileForm() {
         <Stack spacing={3}>
           <div className="flex items-center p-8 rounded shadow-xl">
             <div className="w-4/12">
-              <UploadImg onChange={onChange} images={images} user={currentUser} />
+              <UploadImg onChange={onChange} images={images} user={user} />
             </div>
             <div className="w-8/12 ml-6">
               <div className="flex mb-4">

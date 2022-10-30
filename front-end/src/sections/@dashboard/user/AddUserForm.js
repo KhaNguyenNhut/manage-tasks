@@ -8,11 +8,13 @@ import { DesktopDatePicker, LoadingButton, LocalizationProvider } from '@mui/lab
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { useDispatch, useSelector } from 'react-redux';
 // component
 import UploadImg from './UploadImg';
 import roleApi from '../../../api/roleApi';
 import userApi from '../../../api/userApi';
 import authApi from '../../../api/authApi';
+import { updateUser } from '../../../store/slices/userSlice';
 
 // ----------------------------------------------------------------------
 
@@ -27,6 +29,8 @@ export default function AddUserForm({ user }) {
   const [birthday, setBirthday] = useState(dayjs(user && user.birthday ? user.birthday : '2000-08-18'));
   const { id } = useParams();
   const isEditUser = !!id;
+  const currentUser = useSelector((state) => (state.user ? state.user.user : {}));
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getRoles();
@@ -86,7 +90,10 @@ export default function AddUserForm({ user }) {
         if (!isEditUser) {
           await authApi.addUser(formik.values);
         } else {
-          await userApi.update(formik.values, user._id);
+          const response = await userApi.update(formik.values, user._id);
+          if (id === currentUser._id) {
+            dispatch(updateUser(response));
+          }
         }
         navigate('/dashboard/user', { replace: true });
       } catch ({ response }) {

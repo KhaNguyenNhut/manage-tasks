@@ -1,30 +1,12 @@
 import { Container, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import userApi from '../api/userApi';
+import { useSelector } from 'react-redux';
 import Page from '../components/Page';
-import ProfileForm from '../sections/@dashboard/profile/ProfileForm';
-import MyTask from '../sections/@dashboard/profile/MyTask';
 import ChangePassword from '../sections/@dashboard/profile/ChangePassword';
+import MyTask from '../sections/@dashboard/profile/MyTask';
+import ProfileForm from '../sections/@dashboard/profile/ProfileForm';
 
 function Profile() {
-  const { id } = useParams();
-  const [user, setUser] = useState();
-  const isEditUser = !!id;
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await userApi.getByID(id);
-        setUser(response);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    if (isEditUser) {
-      getUser();
-    }
-  }, [isEditUser, id]);
+  const { user } = useSelector((state) => state.user);
   return (
     <Page title="Thông Tin Cá Nhân">
       <Container>
@@ -33,7 +15,7 @@ function Profile() {
             Thông Tin Cá Nhân
           </Typography>
         </Stack>
-        {!isEditUser || (isEditUser && user) ? <ProfileForm user={user} /> : <p>Loading...</p>}
+        {user ? <ProfileForm user={user} /> : <p>Loading...</p>}
 
         <Typography variant="h4" gutterBottom className="my-8">
           Đổi mật khẩu

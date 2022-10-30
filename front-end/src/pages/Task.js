@@ -39,7 +39,7 @@ const TABLE_HEAD = [
   { id: 'user', label: 'Người Thực Hiện', alignRight: false },
   { id: 'supervisor', label: 'Người Giám Sát', alignRight: false },
   { id: 'timeG', label: 'Giờ G', alignRight: false },
-  { id: 'createdAt', label: 'Ngày Tạo', alignRight: false },
+  { id: 'link', label: 'Link hoạt động', alignRight: false },
   { id: 'status', label: 'Trạng Thái', alignRight: false },
   { id: '' },
 ];
@@ -232,7 +232,21 @@ export default function Task() {
                         </div>
                       </TableCell>
                       <TableCell align="left">{row.timeG}</TableCell>
-                      <TableCell align="left">{row.createdAt.slice(0, 10)}</TableCell>
+                      <Tooltip title={row.link}>
+                        <TableCell align="left">
+                          {row.link && (
+                            <a
+                              href={/^http/.test(row.link) ? row.link : `https://${row.link}`}
+                              rel="noreferrer"
+                              target="_blank"
+                              className="truncate max-w-[150px] inline-block"
+                            >
+                              {row.link}
+                            </a>
+                          )}
+                        </TableCell>
+                      </Tooltip>
+
                       <TableCell align="left">{row.status}</TableCell>
                       <TableCell align="right">
                         <TaskMoreMenu

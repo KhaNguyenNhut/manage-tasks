@@ -107,7 +107,7 @@ function TaskInfo() {
                   <p>{task.note}</p>
                   {task.link && (
                     <>
-                      <p className="mt-8 font-semibold">Liên kết</p>
+                      <p className="mt-8 font-semibold">Link hoạt động</p>
                       <a
                         href={/^http/.test(task.link) ? task.link : `https://${task.link}`}
                         rel="noreferrer"

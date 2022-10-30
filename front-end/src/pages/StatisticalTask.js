@@ -272,7 +272,7 @@ export default function StatisticalTask() {
             convertJsonToSheet(
               count,
               task.topic,
-              task.topic,
+              '',
               task.user.fullName,
               formatDate(task.startDate),
               formatDate(task.endDate),
@@ -305,7 +305,7 @@ export default function StatisticalTask() {
     ];
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Thống kê công việc');
-    XLSX.writeFile(workbook, 'DataSheet.xlsx');
+    XLSX.writeFile(workbook, 'Thống Kê Báo Cáo.xlsx');
     setIsGenerateData(false);
   };
 

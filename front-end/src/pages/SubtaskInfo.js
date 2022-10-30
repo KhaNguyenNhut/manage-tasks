@@ -91,7 +91,7 @@ function SubTaskInfo() {
                   <p>{subtask.note}</p>
                   {subtask.link && (
                     <>
-                      <p className="mt-8 font-semibold">Liên kết</p>
+                      <p className="mt-8 font-semibold">Link hoạt động</p>
                       <a
                         href={/^http/.test(subtask.link) ? subtask.link : `https://${subtask.link}`}
                         rel="noreferrer"
