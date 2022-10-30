@@ -15,6 +15,7 @@ var UserSchema = new Schema({
   birthday: { type: Date },
   role: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
   degree: { type: String },
+  link: { type: String },
 });
 
 module.exports = mongoose.model("User", UserSchema);

@@ -71,6 +71,7 @@ export default function AddUserForm({ user }) {
       birthday: isEditUser ? user.birthday : '',
       role: isEditUser && user.role ? user.role._id : '',
       degree: isEditUser ? user.degree : '',
+      link: isEditUser ? user.link : '',
     },
     validationSchema: LoginSchema,
     onSubmit: async () => {
@@ -204,14 +205,24 @@ export default function AddUserForm({ user }) {
                 </div>
               </div>
               <div className="flex mb-4">
-                <div className="w-full pr-2">
+                <div className="w-1/2 pr-2">
                   <TextField
                     fullWidth
                     type="text"
-                    label="Học Vị*"
+                    label="Học Vị"
                     {...getFieldProps('degree')}
                     error={Boolean(touched.degree && errors.degree)}
                     helperText={touched.degree && errors.degree}
+                  />
+                </div>
+                <div className="w-1/2 pr-2">
+                  <TextField
+                    fullWidth
+                    type="text"
+                    label="Liên kết"
+                    {...getFieldProps('link')}
+                    error={Boolean(touched.link && errors.link)}
+                    helperText={touched.link && errors.link}
                   />
                 </div>
               </div>

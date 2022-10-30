@@ -52,6 +52,7 @@ export default function ProfileForm() {
       birthday: currentUser ? currentUser.birthday : '',
       role: currentUser && currentUser.role ? currentUser.role._id : '',
       degree: currentUser ? currentUser.degree : '',
+      link: currentUser ? currentUser.link : '',
     },
     validationSchema: LoginSchema,
     onSubmit: async () => {
@@ -163,6 +164,18 @@ export default function ProfileForm() {
                     {...getFieldProps('degree')}
                     error={Boolean(touched.degree && errors.degree)}
                     helperText={touched.degree && errors.degree}
+                  />
+                </div>
+              </div>
+              <div className="flex mb-4">
+                <div className="w-full pr-2">
+                  <TextField
+                    fullWidth
+                    type="text"
+                    label="Liên kết"
+                    {...getFieldProps('link')}
+                    error={Boolean(touched.link && errors.link)}
+                    helperText={touched.link && errors.link}
                   />
                 </div>
               </div>

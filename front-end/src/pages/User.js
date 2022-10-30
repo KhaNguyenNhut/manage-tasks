@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link, Link as RouterLink } from 'react-router-dom';
 // mock
 import userApi from '../api/userApi';
 // components
@@ -37,6 +37,7 @@ const TABLE_HEAD = [
   { id: 'officerCode', label: 'Mã Cán Bộ', alignRight: false },
   { id: 'birthday', label: 'Ngày Sinh', alignRight: false },
   { id: 'phoneNumber', label: 'Số Điện Thoại', alignRight: false },
+  { id: 'link', label: 'Liên kết', alignRight: false },
   { id: '' },
 ];
 
@@ -174,7 +175,8 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    const { _id, fullName, role, birthday, email, degree, avatar, officerCode, phoneNumber } = row;
+                    const { _id, fullName, role, birthday, email, degree, avatar, officerCode, phoneNumber, link } =
+                      row;
                     const isItemSelected = selected.indexOf(fullName) !== -1;
 
                     return (
@@ -201,6 +203,13 @@ export default function User() {
                         <TableCell align="left">{officerCode}</TableCell>
                         <TableCell align="left">{birthday ? birthday.slice(0, 10) : ''}</TableCell>
                         <TableCell align="left">{phoneNumber}</TableCell>
+                        <TableCell align="left">
+                          {link ? (
+                            <a href={link} target="blank" className="no-underline text-blue-500">
+                              Truy cập
+                            </a>
+                          ) : null}
+                        </TableCell>
                         <TableCell align="right">
                           <UserMoreMenu id={_id} handleDeleteUser={handleDeleteUser} />
                         </TableCell>
