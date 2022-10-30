@@ -124,7 +124,7 @@ function applySortFilter(array, comparator, query, taskTypeId, status, user, sta
         (_user) =>
           _user.startDate.slice(0, 4) === year &&
           _user.startDate.slice(5, 7) === month &&
-          _user.startDate.slice(8, 10) === day
+          _user.startDate.slice(8, 10) >= day
       );
       array = data && data.length >= 0 ? data : array;
     }
@@ -135,9 +135,7 @@ function applySortFilter(array, comparator, query, taskTypeId, status, user, sta
       const data = filter(
         array,
         (_user) =>
-          _user.endDate.slice(0, 4) === year &&
-          _user.endDate.slice(5, 7) === month &&
-          _user.endDate.slice(8, 10) === day
+          _user.endDate.slice(0, 4) === year && _user.endDate.slice(5, 7) === month && _user.endDate.slice(8, 10) <= day
       );
       array = data && data.length >= 0 ? data : array;
     }
