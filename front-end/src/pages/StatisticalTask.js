@@ -116,11 +116,27 @@ function applySortFilter(array, comparator, query, taskTypeId, status, user, sta
 
   try {
     if (startDate) {
-      const data = filter(array, (_user) => _user.startDate >= startDate.toISOString());
+      const year = startDate.toISOString().slice(0, 4);
+      const month = startDate.toISOString().slice(5, 7);
+      const day = startDate.toISOString().slice(8, 10);
+      const data = filter(
+        array,
+        (_user) =>
+          _user.startDate.slice(0, 4) === year &&
+          _user.startDate.slice(5, 7) === month &&
+          _user.startDate.slice(8, 10) >= day
+      );
       array = data && data.length >= 0 ? data : array;
     }
     if (endDate) {
-      const data = filter(array, (_user) => _user.endDate <= endDate.toISOString());
+      const year = endDate.toISOString().slice(0, 4);
+      const month = endDate.toISOString().slice(5, 7);
+      const day = endDate.toISOString().slice(8, 10);
+      const data = filter(
+        array,
+        (_user) =>
+          _user.endDate.slice(0, 4) === year && _user.endDate.slice(5, 7) === month && _user.endDate.slice(8, 10) <= day
+      );
       array = data && data.length >= 0 ? data : array;
     }
   } catch (eror) {
