@@ -31,8 +31,9 @@ const LENGTH_INVALID_STRING_DATE = 30;
 
 const isExistedKeyword = (keyword, transcript) => transcript.indexOf(keyword) >= 0;
 
-export const hasExistKeyWord = (transcript) => {
+export const hasExistKeyWord = (transcript, isSubtask = false) => {
   let fieldSelected = '';
+  keywords[0] = isSubtask ? 'nhiệm vụ' : 'chủ đề';
   for (let index = 0; index < keywords.length; index += 1) {
     if (isExistedKeyword(keywords[index], transcript)) {
       fieldSelected = FIELDS[index];

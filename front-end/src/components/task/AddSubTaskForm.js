@@ -116,7 +116,7 @@ export default function AddSubTaskForm({ task, subtask }) {
         resetTranscript();
         setFieldRecord();
       } else {
-        const field = hasExistKeyWord(transcript);
+        const field = hasExistKeyWord(transcript, true);
         if (field) {
           resetTranscript();
           setFieldRecord(field);
@@ -220,7 +220,7 @@ export default function AddSubTaskForm({ task, subtask }) {
               <TextField
                 fullWidth
                 type="text"
-                label="Chủ Đề*"
+                label="Nhiệm vụ*"
                 {...getFieldProps('topic')}
                 error={Boolean(touched.topic && errors.topic)}
                 helperText={touched.topic && errors.topic}
