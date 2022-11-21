@@ -26,6 +26,7 @@ import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as XLSX from 'xlsx';
+import { getLateDays } from '../utils/dateLate';
 import subtaskApi from '../api/subtaskApi';
 // mock
 import taskApi from '../api/taskApi';
@@ -230,15 +231,38 @@ export default function StatisticalTask() {
     newTasks[idxTask] = task;
     setTask(newTasks);
   };
-  const convertJsonToSheet = (index, task, subtask, worker, startDate, endDate, status, progress) => ({
-    STT: index,
-    'Công việc': task,
-    'Nhiệm vụ': subtask,
-    'Người thực hiện': worker,
-    'Thời gian bắt đầu': startDate,
-    'Thời gian kết thúc': endDate,
-    'Trạng Thái': status,
-    'Tỷ lệ % hoàn thành': progress,
+
+  const convertJsonToSheet = (index, task, subtask, worker, startDate, endDate, status, progress, timeG) => {
+    const currentDate = new Date();
+    const late =
+      currentDate > new Date(endDate) && status !== 'Hoàn thành' && status !== 'Hủy bỏ'
+        ? `đã trễ ${getLateDays(endDate)} ngày`
+        : '';
+    return {
+      STT: index,
+      'Công việc': task,
+      'Nhiệm vụ': subtask,
+      'Người thực hiện': worker,
+      'Thời gian bắt đầu': startDate,
+      'Thời gian kết thúc': endDate,
+      'Trạng Thái': status,
+      'Tỷ lệ % hoàn thành': progress,
+      'Ghi Chú': late,
+      'Giờ G': timeG,
+    };
+  };
+
+  const sumTimeG = (total) => ({
+    STT: '',
+    'Công việc': '',
+    'Nhiệm vụ': '',
+    'Người thực hiện': '',
+    'Thời gian bắt đầu': '',
+    'Thời gian kết thúc': '',
+    'Trạng Thái': '',
+    'Tỷ lệ % hoàn thành': '',
+    'Ghi Chú': '',
+    'Giờ G': `TỔNG: ${total}`,
   });
 
   const formatDate = (date) => date.slice(0, 10);
@@ -246,6 +270,7 @@ export default function StatisticalTask() {
   const generateData = async () => {
     const data = [];
     let count = 1;
+    let timeG = 0;
     try {
       for (let idx = 0; idx < filteredTasks.length; idx += 1) {
         const task = filteredTasks[idx];
@@ -255,18 +280,36 @@ export default function StatisticalTask() {
           // eslint-disable-next-line no-loop-func
           subtasks.forEach((each, index) => {
             if (index === 0) {
+              // add task
               data.push(
                 convertJsonToSheet(
                   count,
                   task.topic,
+                  task.topic,
+                  task.user.fullName,
+                  formatDate(task.startDate),
+                  formatDate(task.endDate),
+                  task.status,
+                  task.progress,
+                  ''
+                )
+              );
+
+              // add subtask
+              data.push(
+                convertJsonToSheet(
+                  '',
+                  '',
                   each.topic,
                   each.user.fullName,
                   formatDate(each.startDate),
                   formatDate(each.endDate),
                   each.status,
-                  each.progress
+                  each.progress,
+                  each.timeG
                 )
               );
+              timeG += each.timeG;
               count += 1;
             } else {
               data.push(
@@ -278,9 +321,11 @@ export default function StatisticalTask() {
                   formatDate(each.startDate),
                   formatDate(each.endDate),
                   each.status,
-                  each.progress
+                  each.progress,
+                  each.timeG
                 )
               );
+              timeG += each.timeG;
             }
           });
         } else {
@@ -288,17 +333,20 @@ export default function StatisticalTask() {
             convertJsonToSheet(
               count,
               task.topic,
-              '',
+              task.topic,
               task.user.fullName,
               formatDate(task.startDate),
               formatDate(task.endDate),
               task.status,
-              task.progress
+              task.progress,
+              task.timeG
             )
           );
           count += 1;
+          timeG += task.timeG;
         }
       }
+      data.push(sumTimeG(timeG));
     } catch (err) {
       console.log(err);
     }
