@@ -2,6 +2,7 @@ const SubTask = require('../models/SubTask');
 const {
   createNotification,
   getNotification,
+  deleteNotificationBySubTaskId,
 } = require('./NotificationsController');
 
 exports.getAllSubTasks = async (req, res) => {
@@ -82,6 +83,7 @@ exports.deleteSubTask = async (req, res) => {
     }
 
     await subtask.remove();
+    await deleteNotificationBySubTaskId(req.params.id);
     res.status(200).json({ success: true });
   } catch (err) {
     res.status(400).json({ message: err });

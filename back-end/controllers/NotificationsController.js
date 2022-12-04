@@ -93,3 +93,11 @@ exports.markAsRead = async (req, res) => {
     res.status(400).json({ message: err });
   }
 };
+
+exports.deleteNotificationByTaskId = async (taskId) => {
+  await Notification.deleteMany({ task: taskId });
+};
+
+exports.deleteNotificationBySubTaskId = async (subtaskId) => {
+  await Notification.deleteMany({ subtask: subtaskId });
+};

@@ -15,12 +15,16 @@ function SubTaskInfo() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const getInfo = async () => {
-      const responseSubtasks = await subtaskApi.getByID(id);
-      setSubTask(responseSubtasks);
-      setProgress(responseSubtasks.progress);
-    };
-    getInfo();
+    try {
+      const getInfo = async () => {
+        const responseSubtasks = await subtaskApi.getByID(id);
+        setSubTask(responseSubtasks);
+        setProgress(responseSubtasks.progress);
+      };
+      getInfo();
+    } catch (error) {
+      window.location.href = '/';
+    }
   }, [id]);
 
   const onUpdateTask = async (status) => {
@@ -44,6 +48,8 @@ function SubTaskInfo() {
   return (
     <Page title="Thông Tin Cá Nhân">
       <Container>
+        {!subtask && <p>Không tồn tại nhiệm vụ!</p>}
+
         {subtask && (
           <div className="p-8 bg-white shadow-xl rounded-2xl">
             <div className="flex justify-between">

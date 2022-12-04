@@ -17,18 +17,21 @@ function TaskInfo() {
   const [task, setTask] = useState();
   const [subtasks, setSubTasks] = useState([]);
   const [progress, setProgress] = useState(0);
-
   useEffect(() => {
-    const getInfo = async () => {
-      const response = await taskApi.getByID(id);
-      setTask(response);
-      setProgress(response.progress);
+    try {
+      const getInfo = async () => {
+        const response = await taskApi.getByID(id);
+        setTask(response);
+        setProgress(response.progress);
 
-      const responseSubtasks = await subtaskApi.getSubtasks(id);
-      setSubTasks(responseSubtasks);
-    };
+        const responseSubtasks = await subtaskApi.getSubtasks(id);
+        setSubTasks(responseSubtasks);
+      };
 
-    getInfo();
+      getInfo();
+    } catch (err) {
+      window.location.href = '/';
+    }
   }, [id]);
 
   const onUpdateTask = async (status) => {
@@ -55,6 +58,7 @@ function TaskInfo() {
   return (
     <Page title="Thông Tin Cá Nhân">
       <Container>
+        {!task && <p>Không tồn tại công việc!</p>}
         {task && (
           <div className="p-8 bg-white shadow-xl rounded-2xl">
             <div className="flex justify-end">

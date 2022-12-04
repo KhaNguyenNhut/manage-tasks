@@ -291,9 +291,10 @@ export default function StatisticalTask() {
                   formatDate(task.endDate),
                   task.status,
                   task.progress,
-                  ''
+                  task.timeG
                 )
               );
+              timeG += task.timeG;
 
               // add subtask
               data.push(

@@ -2,6 +2,7 @@ const Task = require('../models/Task');
 const {
   createNotification,
   getNotification,
+  deleteNotificationByTaskId,
 } = require('./NotificationsController');
 
 exports.getAllTasks = async (req, res) => {
@@ -78,6 +79,7 @@ exports.deleteTask = async (req, res) => {
     }
 
     await task.remove();
+    await deleteNotificationByTaskId(req.params.id);
     res.status(200).json({ success: true });
   } catch (err) {
     res.status(400).json({ message: err });
